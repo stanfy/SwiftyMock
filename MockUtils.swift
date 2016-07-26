@@ -5,36 +5,36 @@
 
 // MARK: Base Call Mock/Stub
 
-class Call<Value> {
+public class Call<Value> {
 
     // Mocking Call with number of calls info
 
-    private(set) var callsCount: Int = 0
-    var called: Bool {
+    public private(set) var callsCount: Int = 0
+    public var called: Bool {
         return callsCount > 0
     }
 
     // Stubbing Call with predefined Value
 
-    private(set) var stubbedValue: Value?
-    func returns(value: Value) {
+    public private(set) var stubbedValue: Value?
+    public func returns(value: Value) {
         stubbedValue = value
     }
 }
 
 // MARK: Function Call Mock/Stub/Spy
 
-class FunctionCall<Arg, Value>: Call<Value> {
+public class FunctionCall<Arg, Value>: Call<Value> {
 
     // Spying Call's passed Arguments
 
-    private(set) var capturedArguments: [Arg] = []
-    var capturedArgument: Arg? {
+    public private(set) var capturedArguments: [Arg] = []
+    public var capturedArgument: Arg? {
         return capturedArguments.last
     }
 }
 
-func stubCall<Arg, Value>(call: FunctionCall<Arg, Value>, argument: Arg, defaultValue: Value) -> Value {
+public func stubCall<Arg, Value>(call: FunctionCall<Arg, Value>, argument: Arg, defaultValue: Value) -> Value {
     call.callsCount += 1
     call.capturedArguments += [argument]
 
@@ -45,9 +45,9 @@ func stubCall<Arg, Value>(call: FunctionCall<Arg, Value>, argument: Arg, default
 
 // MARK: Function Call Mock/Stub/Spy Without Arguments
 
-class FunctionVoidCall<Value>: FunctionCall<Void, Value> {}
+public class FunctionVoidCall<Value>: FunctionCall<Void, Value> {}
 
-func stubCall<Value>(call: FunctionCall<Void, Value>, defaultValue: Value) -> Value {
+public func stubCall<Value>(call: FunctionCall<Void, Value>, defaultValue: Value) -> Value {
     return stubCall(call, argument: (), defaultValue: defaultValue)
 }
 
@@ -55,16 +55,16 @@ func stubCall<Value>(call: FunctionCall<Void, Value>, defaultValue: Value) -> Va
 
 import ReactiveCocoa
 
-class ReactiveCall<Arg, Value, Error: ErrorType>: FunctionCall<Arg, Value> {
-    private(set) var stubbedError: Error?
-    func fails(error: Error) {
+public class ReactiveCall<Arg, Value, Error: ErrorType>: FunctionCall<Arg, Value> {
+    public private(set) var stubbedError: Error?
+    public func fails(error: Error) {
         stubbedError = error
     }
 }
 
 // Stub Signal Producer Call
 
-func stubCall<Arg, Value, Error: ErrorType>(call: ReactiveCall<Arg, Value, Error>, argument: Arg) -> SignalProducer<Value, Error> {
+public func stubCall<Arg, Value, Error: ErrorType>(call: ReactiveCall<Arg, Value, Error>, argument: Arg) -> SignalProducer<Value, Error> {
     call.callsCount += 1
     call.capturedArguments += [argument]
 
@@ -84,15 +84,15 @@ func stubCall<Arg, Value, Error: ErrorType>(call: ReactiveCall<Arg, Value, Error
 
 // MARK: Reactive Function Call Mock/Stub/Spy Without Arguments
 
-class ReactiveVoidCall<Value, Error: ErrorType>: ReactiveCall<Void, Value, Error> {}
+public class ReactiveVoidCall<Value, Error: ErrorType>: ReactiveCall<Void, Value, Error> {}
 
-func stubCall<Value, Error: ErrorType>(call: ReactiveCall<Void, Value, Error>) -> SignalProducer<Value, Error> {
+public func stubCall<Value, Error: ErrorType>(call: ReactiveCall<Void, Value, Error>) -> SignalProducer<Value, Error> {
     return stubCall(call, argument: ())
 }
 
 // Stub Action Call
 
-func stubCall<Value, Error: ErrorType>(call: ReactiveCall<Void, Value, Error>) -> Action<Void, Value, Error> {
+public func stubCall<Value, Error: ErrorType>(call: ReactiveCall<Void, Value, Error>) -> Action<Void, Value, Error> {
     return Action {
         stubCall(call)
     }
