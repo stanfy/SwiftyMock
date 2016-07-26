@@ -1,54 +1,100 @@
-//
-// Created by Paul Taykalo on 6/30/16.
-// Copyright (c) 2016 CocoaPods. All rights reserved.
-//
+// A handy Utility for manual function calls testing.
+// Since Swift doesn't provide any access to runtime yet, we have to manually mock, stub and spy our calls
 
-import Foundation
-import Result
-import ReactiveCocoa
+// swiftlint:disable line_length
 
-public class Call<S, F: ErrorType> {
-    public var callsCount: Int = 0
-    public var called: Bool {
+// MARK: Base Call Mock/Stub
+
+class Call<Value> {
+
+    // Mocking Call with number of calls info
+
+    private(set) var callsCount: Int = 0
+    var called: Bool {
         return callsCount > 0
     }
-    public var stub: Result<S, F>?
-    public func will(stub: Result<S, F>) {
-        self.stub = stub
+
+    // Stubbing Call with predefined Value
+
+    private(set) var stubbedValue: Value?
+    func returns(value: Value) {
+        stubbedValue = value
     }
-    public init() {}
 }
 
-public class FunctionCall<P, S>: Call<S, NoError> {
-    public var capturedValues: [P] = []
-    public var capturedValue: P? {
-        return capturedValues.last
+// MARK: Function Call Mock/Stub/Spy
+
+class FunctionCall<Arg, Value>: Call<Value> {
+
+    // Spying Call's passed Arguments
+
+    private(set) var capturedArguments: [Arg] = []
+    var capturedArgument: Arg? {
+        return capturedArguments.last
     }
-    public override init() { super.init() }
 }
 
-public func stubCall<S, F>(call: Call<S, F>) -> SignalProducer<S, F> {
+func stubCall<Arg, Value>(call: FunctionCall<Arg, Value>, argument: Arg, defaultValue: Value) -> Value {
     call.callsCount += 1
-    if case let .Some(.Failure(error)) = call.stub {
-        return SignalProducer(error: error)
+    call.capturedArguments += [argument]
+
+    guard let stubbedValue = call.stubbedValue else { return defaultValue  }
+
+    return stubbedValue
+}
+
+// MARK: Function Call Mock/Stub/Spy Without Arguments
+
+class FunctionVoidCall<Value>: FunctionCall<Void, Value> {}
+
+func stubCall<Value>(call: FunctionCall<Void, Value>, defaultValue: Value) -> Value {
+    return stubCall(call, argument: (), defaultValue: defaultValue)
+}
+
+// MARK: Reactive Function Call Mock/Stub/Spy
+
+import ReactiveCocoa
+
+class ReactiveCall<Arg, Value, Error: ErrorType>: FunctionCall<Arg, Value> {
+    private(set) var stubbedError: Error?
+    func fails(error: Error) {
+        stubbedError = error
     }
-    if case let .Some(.Success(value)) = call.stub {
+}
+
+// Stub Signal Producer Call
+
+func stubCall<Arg, Value, Error: ErrorType>(call: ReactiveCall<Arg, Value, Error>, argument: Arg) -> SignalProducer<Value, Error> {
+    call.callsCount += 1
+    call.capturedArguments += [argument]
+
+    // Value presence has higher priority over error
+    // If both Value and Error set, then Value is chosen
+
+    if let value = call.stubbedValue {
         return SignalProducer(value: value)
     }
+
+    if let error = call.stubbedError {
+        return SignalProducer(error: error)
+    }
+
     return .empty
 }
 
-public func stubCall<S, P>(call: FunctionCall<P, S>, parameter: P, defaultValue: S) -> S {
-    call.callsCount += 1
-    call.capturedValues += [parameter]
-    if case let .Some(.Success(stubbedValue)) = call.stub {
-        return stubbedValue
-    }
-    return defaultValue
+// MARK: Reactive Function Call Mock/Stub/Spy Without Arguments
+
+class ReactiveVoidCall<Value, Error: ErrorType>: ReactiveCall<Void, Value, Error> {}
+
+func stubCall<Value, Error: ErrorType>(call: ReactiveCall<Void, Value, Error>) -> SignalProducer<Value, Error> {
+    return stubCall(call, argument: ())
 }
 
-public func stubCall<S, F>(call: Call<S, F>) -> Action<(), S, F> {
+// Stub Action Call
+
+func stubCall<Value, Error: ErrorType>(call: ReactiveCall<Void, Value, Error>) -> Action<Void, Value, Error> {
     return Action {
-        return stubCall(call)
+        stubCall(call)
     }
 }
+
