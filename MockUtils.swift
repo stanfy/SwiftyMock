@@ -20,6 +20,8 @@ public class Call<Value> {
     public func returns(value: Value) {
         stubbedValue = value
     }
+    
+    public init() {}
 }
 
 // MARK: Function Call Mock/Stub/Spy
