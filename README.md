@@ -131,14 +131,14 @@ class DoableUsageSpec: QuickSpec {
                     enum CustomError: ErrorType { case Error }
 
                     beforeEach {
-                        doable.doSomethingReactiveCall.fails(CustomError.SomeError)
+                        doable.doSomethingReactiveCall.fails(CustomError.Error)
                     }
 
                     it("should use its failure result") {
                         var error: ErrorType!
                         sut.useReactiveDoable().startWithFailure { error = $0  }
 
-                        expect(error as NSError).to(equal(CustomError.SomeError as NSError))
+                        expect(error as NSError).to(equal(CustomError.Error as NSError))
                     }
                 }
             }
