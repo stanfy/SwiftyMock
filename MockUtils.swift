@@ -20,7 +20,7 @@ public class Call<Value> {
     public func returns(value: Value) {
         stubbedValue = value
     }
-    
+
     public init() {}
 }
 
@@ -33,6 +33,10 @@ public class FunctionCall<Arg, Value>: Call<Value> {
     public private(set) var capturedArguments: [Arg] = []
     public var capturedArgument: Arg? {
         return capturedArguments.last
+    }
+
+    public override init() {
+        super.init()
     }
 }
 
@@ -47,7 +51,11 @@ public func stubCall<Arg, Value>(call: FunctionCall<Arg, Value>, argument: Arg, 
 
 // MARK: Function Call Mock/Stub/Spy Without Arguments
 
-public class FunctionVoidCall<Value>: FunctionCall<Void, Value> {}
+public class FunctionVoidCall<Value>: FunctionCall<Void, Value> {
+    public override init() {
+        super.init()
+    }
+}
 
 public func stubCall<Value>(call: FunctionCall<Void, Value>, defaultValue: Value) -> Value {
     return stubCall(call, argument: (), defaultValue: defaultValue)
@@ -61,6 +69,10 @@ public class ReactiveCall<Arg, Value, Error: ErrorType>: FunctionCall<Arg, Value
     public private(set) var stubbedError: Error?
     public func fails(error: Error) {
         stubbedError = error
+    }
+
+    public override init() {
+        super.init()
     }
 }
 
@@ -86,7 +98,11 @@ public func stubCall<Arg, Value, Error: ErrorType>(call: ReactiveCall<Arg, Value
 
 // MARK: Reactive Function Call Mock/Stub/Spy Without Arguments
 
-public class ReactiveVoidCall<Value, Error: ErrorType>: ReactiveCall<Void, Value, Error> {}
+public class ReactiveVoidCall<Value, Error: ErrorType>: ReactiveCall<Void, Value, Error> {
+    public override init() {
+        super.init()
+    }
+}
 
 public func stubCall<Value, Error: ErrorType>(call: ReactiveCall<Void, Value, Error>) -> SignalProducer<Value, Error> {
     return stubCall(call, argument: ())
@@ -99,4 +115,3 @@ public func stubCall<Value, Error: ErrorType>(call: ReactiveCall<Void, Value, Er
         stubCall(call)
     }
 }
-
