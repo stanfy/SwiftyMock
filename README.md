@@ -92,7 +92,7 @@ class DoableUsageSpec: QuickSpec {
                 it("should ask doable to do something and use its result") {
                     let result = sut.useSimpleDoable()
 
-                    expect(doable.called).to(beTruthy())
+                    expect(doable.doSomethingCall.called).to(beTruthy())
                     expect(result).to(equal(42))
                 }
             }
@@ -103,8 +103,8 @@ class DoableUsageSpec: QuickSpec {
                     // here result of this call will be `0` as we specified it as a `defaultValue` in stubbed Call
                     // we can override it with our custom value as we did in spec above by using `returns` method
 
-                    expect(doable.capturedArgument.x).to(equal(4))
-                    expect(doable.capturedArgument.y).to(equal(2))
+                    expect(doable.doSomethingWithArgsCall.capturedArgument?.x).to(equal(4))
+                    expect(doable.doSomethingWithArgsCall.capturedArgument?.y).to(equal(2))
                 }
             }
 
@@ -112,12 +112,12 @@ class DoableUsageSpec: QuickSpec {
                 it("should ask doable to do something reactive with 42") {
                     sut.useReactiveDoable().start()
 
-                    expect(doable.capturedArgument).to(equal(42))
+                    expect(doable.doSomethingReactiveCall.capturedArgument).to(equal(42))
                 }
 
                 context("with successful result") {
                     beforeEach {
-                        doable.doSomethingReactive().returns(4422)
+                        doable.doSomethingReactiveCall.returns(4422)
                     }
 
                     it("should use its successful result") {
@@ -131,7 +131,7 @@ class DoableUsageSpec: QuickSpec {
                     enum CustomError: ErrorType { case Error }
 
                     beforeEach {
-                        doable.doSomethingReactive().fails(CustomError.SomeError)
+                        doable.doSomethingReactiveCall.fails(CustomError.SomeError)
                     }
 
                     it("should use its failure result") {
