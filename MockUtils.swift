@@ -3,50 +3,81 @@
 
 // swiftlint:disable line_length
 
-// MARK: Base Call Mock/Stub
+// MARK: Function Call Mock/Stub/Spy
 
-public class Call<Value> {
-
-    // Mocking Call with number of calls info
-
+public class FunctionCall<Arg, Value> {
+    
+    // Spying Call's passed Arguments
+    
     public private(set) var callsCount: Int = 0
     public var called: Bool {
         return callsCount > 0
     }
-
+    
     // Stubbing Call with predefined Value
-
+    
     public private(set) var stubbedValue: Value?
     public func returns(value: Value) {
         stubbedValue = value
     }
-
-    public init() {}
-}
-
-// MARK: Function Call Mock/Stub/Spy
-
-public class FunctionCall<Arg, Value>: Call<Value> {
-
-    // Spying Call's passed Arguments
-
+    
     public private(set) var capturedArguments: [Arg] = []
     public var capturedArgument: Arg? {
         return capturedArguments.last
     }
-
-    public override init() {
-        super.init()
+    
+    private var stubbedBlocks: [ReturnStub<Arg, Value>] = []
+    
+    @warn_unused_result(message="Did you forget to call returns?")
+    public func on(filter: Arg -> Bool) -> ReturnContext<Arg, Value> {
+        let stub = ReturnStub<Arg, Value>(filter: filter)
+        stubbedBlocks += [stub]
+        return ReturnContext(call: self, stub: stub)
     }
+    
+    public init() {}
 }
 
 public func stubCall<Arg, Value>(call: FunctionCall<Arg, Value>, argument: Arg, defaultValue: Value) -> Value {
     call.callsCount += 1
     call.capturedArguments += [argument]
+    
+    for stub in call.stubbedBlocks {
+        if stub.filter(argument) {
+            if case let .Some(stubbedValue) = stub.stubbedValue {
+                return stubbedValue
+            }
+        }
+    }
 
     guard let stubbedValue = call.stubbedValue else { return defaultValue  }
-
+    
     return stubbedValue
+}
+
+// MARK: Helpers for stubbing
+
+public class ReturnContext<Arg, Value> {
+    let call: FunctionCall<Arg, Value>
+    let stub: ReturnStub<Arg, Value>
+    init(call: FunctionCall<Arg, Value>, stub: ReturnStub<Arg, Value>) {
+        self.call = call
+        self.stub = stub
+    }
+    
+    public func returns(value: Value) -> FunctionCall<Arg, Value> {
+        stub.stubbedValue = value
+        return call
+    }
+}
+
+public class ReturnStub<Arg, Value> {
+    let filter: Arg -> Bool
+    private(set) var stubbedValue: Value?
+    
+    init(filter: Arg -> Bool) {
+        self.filter = filter
+    }
 }
 
 // MARK: Function Call Mock/Stub/Spy Without Arguments
@@ -70,7 +101,7 @@ public class ReactiveCall<Arg, Value, Error: ErrorType>: FunctionCall<Arg, Value
     public func fails(error: Error) {
         stubbedError = error
     }
-
+    
     public override init() {
         super.init()
     }
@@ -81,18 +112,18 @@ public class ReactiveCall<Arg, Value, Error: ErrorType>: FunctionCall<Arg, Value
 public func stubCall<Arg, Value, Error: ErrorType>(call: ReactiveCall<Arg, Value, Error>, argument: Arg) -> SignalProducer<Value, Error> {
     call.callsCount += 1
     call.capturedArguments += [argument]
-
+    
     // Value presence has higher priority over error
     // If both Value and Error set, then Value is chosen
-
+    
     if let value = call.stubbedValue {
         return SignalProducer(value: value)
     }
-
+    
     if let error = call.stubbedError {
         return SignalProducer(error: error)
     }
-
+    
     return .empty
 }
 
