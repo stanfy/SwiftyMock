@@ -38,7 +38,7 @@ public class FunctionCall<Arg, Value> {
     public init() {}
 }
 
-public func stubCall<Arg, Value>(call: FunctionCall<Arg, Value>, argument: Arg, defaultValue: Value) -> Value {
+public func stubCall<Arg, Value>(call: FunctionCall<Arg, Value>, argument: Arg, defaultValue: Value? = nil) -> Value {
     call.callsCount += 1
     call.capturedArguments += [argument]
     
@@ -50,7 +50,14 @@ public func stubCall<Arg, Value>(call: FunctionCall<Arg, Value>, argument: Arg, 
         }
     }
 
-    guard let stubbedValue = call.stubbedValue else { return defaultValue  }
+    if case let .Some(stubbedValue) = call.stubbedValue {
+        return stubbedValue
+    }
+    if case let .Some(defaultValue) = defaultValue {
+        return defaultValue
+    }
+    
+    assertionFailure("stub doesnt' have value to return")
     
     return stubbedValue
 }
