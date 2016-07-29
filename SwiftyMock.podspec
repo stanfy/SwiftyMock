@@ -4,6 +4,7 @@ Pod::Spec.new do |s|
   s.summary          = 'Some helpers to do Mocking in Swift.'
   s.description      = <<-DESC
     Some helpers to do Mocking in Swift.
+    Mostly useful for mocking via protocols. Simple solution. Handles most of the cases. Easy setup
                        DESC
 
   s.homepage         = 'https://github.com/Stanfy/SwiftyMock'

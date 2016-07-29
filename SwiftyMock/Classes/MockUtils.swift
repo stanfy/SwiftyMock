@@ -119,7 +119,7 @@ public class FunctionVoidCall<Value>: FunctionCall<Void, Value> {
 }
 
 public func stubCall<Value>(call: FunctionCall<Void, Value>, defaultValue: Value? = nil) -> Value {
-    return try! stubCall(call, argument: (), defaultValue: defaultValue)
+    return stubCall(call, argument: (), defaultValue: defaultValue)
 }
 
 // MARK: Reactive Function Call Mock/Stub/Spy
