@@ -1,4 +1,5 @@
-# SwiftMock
+# SwiftMock [![Build Status](https://travis-ci.org/stanfy/SwiftyMock.svg?branch=master)](https://travis-ci.org/stanfy/SwiftyMock)
+
 This repository contains helpers that make mocking, stubbing and spying in Swift much easier
 
 # Example
