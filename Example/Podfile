@@ -1,12 +1,17 @@
 use_frameworks!
 
-target 'SwiftyMock_Example' do
-    pod 'SwiftyMock', :path => '../'
-    
-    target 'SwiftyMock_Tests' do
-        inherit! :search_paths
-        
-        pod 'Quick', '~> 0.8'
-        pod 'Nimble', '~> 3.0'
-    end
+def reusePods
+   pod 'SwiftyMock', :path => '../'
 end
+
+target 'SwiftyMock_Example' do
+	reusePods
+end
+    
+target 'SwiftyMock_Tests' do
+	reusePods
+
+    pod 'Quick', '~> 0.8'
+    pod 'Nimble', '~> 3.0'
+end
+
