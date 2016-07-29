@@ -3,6 +3,10 @@
 
 // swiftlint:disable line_length
 
+enum SwiftyMockError: ErrorType {
+    case FunctionCallWasntStubbed
+}
+
 // MARK: Function Call Mock/Stub/Spy
 
 public class FunctionCall<Arg, Value> {
@@ -15,10 +19,15 @@ public class FunctionCall<Arg, Value> {
     }
     
     // Stubbing Call with predefined Value
-    
     public private(set) var stubbedValue: Value?
     public func returns(value: Value) {
         stubbedValue = value
+    }
+    
+    // Stubbing Call with prefefined logic
+    public private(set) var stubbedBlock: (Arg -> Value)?
+    public func performs(block: Arg -> Value) {
+        stubbedBlock = block
     }
     
     public private(set) var capturedArguments: [Arg] = []
@@ -38,18 +47,26 @@ public class FunctionCall<Arg, Value> {
     public init() {}
 }
 
-public func stubCall<Arg, Value>(call: FunctionCall<Arg, Value>, argument: Arg, defaultValue: Value? = nil) -> Value {
+public func stubCall<Arg, Value>(call: FunctionCall<Arg, Value>, argument: Arg, defaultValue: Value? = nil)  -> Value {
     call.callsCount += 1
     call.capturedArguments += [argument]
     
     for stub in call.stubbedBlocks {
         if stub.filter(argument) {
+            if case let .Some(stubbedBlock) = stub.stubbedBlock {
+                return stubbedBlock(argument)
+            }
+
             if case let .Some(stubbedValue) = stub.stubbedValue {
                 return stubbedValue
             }
         }
     }
 
+    if case let .Some(stubbedBlock) = call.stubbedBlock {
+        return stubbedBlock(argument)
+    }
+    
     if case let .Some(stubbedValue) = call.stubbedValue {
         return stubbedValue
     }
@@ -59,7 +76,7 @@ public func stubCall<Arg, Value>(call: FunctionCall<Arg, Value>, argument: Arg, 
     
     assertionFailure("stub doesnt' have value to return")
     
-    return stubbedValue
+    return call.stubbedValue!
 }
 
 // MARK: Helpers for stubbing
@@ -76,11 +93,17 @@ public class ReturnContext<Arg, Value> {
         stub.stubbedValue = value
         return call
     }
+    
+    public func performs(block: (Arg -> Value)) -> FunctionCall<Arg, Value> {
+        stub.stubbedBlock = block
+        return call
+    }
 }
 
 public class ReturnStub<Arg, Value> {
     let filter: Arg -> Bool
     private(set) var stubbedValue: Value?
+    private(set) var stubbedBlock: (Arg -> Value)?
     
     init(filter: Arg -> Bool) {
         self.filter = filter
@@ -95,8 +118,8 @@ public class FunctionVoidCall<Value>: FunctionCall<Void, Value> {
     }
 }
 
-public func stubCall<Value>(call: FunctionCall<Void, Value>, defaultValue: Value) -> Value {
-    return stubCall(call, argument: (), defaultValue: defaultValue)
+public func stubCall<Value>(call: FunctionCall<Void, Value>, defaultValue: Value? = nil) -> Value {
+    return try! stubCall(call, argument: (), defaultValue: defaultValue)
 }
 
 // MARK: Reactive Function Call Mock/Stub/Spy
