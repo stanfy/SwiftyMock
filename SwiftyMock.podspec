@@ -14,7 +14,16 @@ Pod::Spec.new do |s|
 
   s.ios.deployment_target = '8.0'
 
-  s.source_files = 'SwiftyMock/Classes/**/*'
-  s.dependency 'ReactiveCocoa', '~> 4.1'
+  s.default_subspec = 'Core'
+
+  s.subspec 'Core' do |cs|
+    cs.source_files = 'SwiftyMock/Classes/Core/**/*'
+  end
+
+  s.subspec 'ReactiveCocoa' do |rs|
+    rs.dependency 'SwifyMock/Core'
+    rs.dependency 'ReactiveCocoa', '~> 4.1'
+    rs.source_files = 'SwiftyMock/Classes/ReactiveCocoa/**/*'
+  end
 
 end
