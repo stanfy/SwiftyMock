@@ -3,10 +3,6 @@
 
 // swiftlint:disable line_length
 
-enum SwiftyMockError: ErrorType {
-    case FunctionCallWasntStubbed
-}
-
 // MARK: Function Call Mock/Stub/Spy
 
 public class FunctionCall<Arg, Value> {

@@ -4,73 +4,63 @@ This repository contains helpers that make mocking, stubbing and spying in Swift
 
 # Example
 
+## Protocol 
+Imagine you have some protocol that describes some behaviour
+
 ```swift
-// Imagine you have some protocol that describes some behaviour
-
-protocol Doable {
-    func doSomething() -> Int
-    func doSomethingWithArgs(x: Int, y: Int) -> Int
-    func doSomethingReactive(x: Int) -> SignalProducer<Int, NoError>
+protocol RoboKitten {
+    func batteryStatus() -> Int
+    func jump(x x: Int, y: Int) -> Int
+    func canJumpAt(x x: Int, y: Int) -> Bool
 }
+```
 
-// And you have some implementation of this protocol
+## Protocol usage
+And this protocol is used somewhere
 
-class DoableImpl: Doable {
-    func doSomething() -> Int {
-        // some implementation
+```swift
+class RoboKittenController {
+    let kitten: RoboKitten
+
+    init(kitten: RoboKitten) {
+        self.kitten = kitten
     }
-
-    func doSomethingWithArgs(x: Int, y: Int) -> Int {
-        // some implementation
+    
+    func jumpAt(x x: Int, y: Int) -> Result {
+        if kitten.canJumpAt(x: x, y: y) {
+            kitten.jump(x: x, y: y)
+            return .SUCCESS
+        }
+        return .FAILURE
     }
-
-    func doSomethingReactive(x: Int) -> SignalProducer<Int, NoError> {
-        // some implementation
-    }
+    ...
 }
+```
+## Protocol mock
 
-// And this protocol is used somewhere
+So now you want to test how protocol is used as a dependency
+And you create to create mock implementation of protocol
+And create fake calls for each method you want to test
+So here how it will look like in SwiftyMock
 
-class DoableUsage {
-    let doable: Doable
-
-    init(doable: Doable) {
-        self.doable = doable
+```swift
+class RoboKittenMock: RoboKitten {
+    let batteryStatusCall = FunctionCall<(), Int>()
+    func batteryStatus() -> Int {
+        return stubCall(batteryStatusCall, argument:())
     }
 
-    func useSimpleDoable() -> Int {
-        return doable.doSomething()
+    let jump = FunctionCall<(x: Int, y: Int), Int>()
+    func jump(x x: Int, y: Int) -> Int {
+        return stubCall(jump, argument: (x: x, y: y))
     }
-
-    func useDoableWithArgs() {
-        return doable.doSomethingWithArgs(4, y: 2)
-    }
-
-    func useReactiveDoable() -> SignalProducer<Int, NoError> {
-        return doable.doSomethingReactive(42)
-    }
-}
-
-// So now you want to test how Doable is used as a dependency
-// You create test class as implementation of Doable protocol
-// And create fake calls for each method you want to test
-
-class DoableTest: Doable {
-    let doSomethingCall = FunctionVoidCall<Int>()
-    func doSomething() -> Int {
-        return stubCall(doSomethingCall, defaultValue: 0)
-    }
-
-    let doSomethingWithArgsCall = FunctionCall<(x: Int, y: Int), Int>()
-    func doSomethingWithArgs(x: Int, y: Int) -> Int {
-        return stubCall(doSomethingWithArgsCall, argument: (x: x, y: y), defaultValue: 0)
-    }
-
-    let doSomethingReactiveCall = ReactiveCall<Int, Int, NoError>()
-    func doSomethingReactive(x: Int) -> SignalProducer<Int, NoError> {
-        return stubCall(doSomethingReactiveCall, argument: x)
+    
+    let canJump = FunctionCall<(x: Int, y: Int), Bool>()
+    func canJumpAt(x x: Int, y: Int) -> Bool {
+        return stubCall(canJump, argument: (x: x, y: y))
     }
 }
+```
 
 // Now you can use DoableTest in spec to verify its usage
 

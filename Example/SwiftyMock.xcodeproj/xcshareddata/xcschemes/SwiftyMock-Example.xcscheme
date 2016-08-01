@@ -52,6 +52,16 @@
                ReferencedContainer = "container:SwiftyMock.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "E481D6821D4DDDBE000E73AE"
+               BuildableName = "RoboKittenTests.xctest"
+               BlueprintName = "RoboKittenTests"
+               ReferencedContainer = "container:SwiftyMock.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
