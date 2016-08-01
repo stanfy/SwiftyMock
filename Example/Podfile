@@ -1,25 +1,25 @@
 use_frameworks!
 
 def reusePods
-   pod 'SwiftyMock', :path => '../'
+  pod 'SwiftyMock/Core', :path => '../'
 end
 
 def reuseTestPods
-	reusePods
-	pod 'Quick', '~> 0.8'
-    pod 'Nimble', '~> 3.0'
-end	
+  reusePods
+  pod 'Quick', '~> 0.8'
+  pod 'Nimble', '~> 3.0'
+end
 
 target 'SwiftyMock_Example' do
-	reusePods
+  reusePods
 end
-    
+
 target 'SwiftyMock_Tests' do
-	reuseTestPods
+  reuseTestPods
 end
 
 target 'RoboKittenTests' do
-	reuseTestPods
+  reuseTestPods
 end
 
 
