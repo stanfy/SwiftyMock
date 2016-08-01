@@ -159,6 +159,45 @@ class RoboKittenControllerSpec: QuickSpec {
                     }
                 }
             }
+
+            context("when asked to rest") {
+
+                it("should ask kitten to rest") {
+                    sut.rest { _ in }
+                    expect(kittenMock.rest.called).to(beTruthy())
+                }
+
+                context("and kitten rests successfully") {
+                    beforeEach {
+                        kittenMock.rest.performs { completion in
+                            completion(true)
+                        }
+                    }
+                    it("should return successful result") {
+                        var result: Result?
+                        sut.rest { restResult in
+                            result = restResult
+                        }
+                        expect(result).to(equal(Result.SUCCESS))
+                    }
+                }
+
+                context("and kitten fails to rest") {
+                    beforeEach {
+                        kittenMock.rest.performs { completion in
+                            completion(false)
+                        }
+                    }
+                    it("should return failure result") {
+                        var result: Result?
+                        sut.rest { restResult in
+                            result = restResult
+                        }
+                        expect(result).to(equal(Result.FAILURE))
+                    }
+                }
+
+            }
         }
     }
 }

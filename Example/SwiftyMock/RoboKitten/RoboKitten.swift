@@ -9,4 +9,5 @@ protocol RoboKitten {
     func batteryStatus() -> Int
     func jump(x x: Int, y: Int) -> Int
     func canJumpAt(x x: Int, y: Int) -> Bool
+    func rest(completed: Bool -> () )
 }

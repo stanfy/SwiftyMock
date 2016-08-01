@@ -69,7 +69,7 @@ public func stubCall<Arg, Value>(call: FunctionCall<Arg, Value>, argument: Arg, 
     if case let .Some(defaultValue) = defaultValue {
         return defaultValue
     }
-    
+
     assertionFailure("stub doesnt' have value to return")
     
     return call.stubbedValue!

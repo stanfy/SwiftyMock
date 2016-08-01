@@ -18,4 +18,8 @@ class RoboKittenV1: RoboKitten {
     func canJumpAt(x x: Int, y: Int) -> Bool {
        return false
     }
+    
+    func rest(completed: Bool -> ()) {
+        
+    }
 }

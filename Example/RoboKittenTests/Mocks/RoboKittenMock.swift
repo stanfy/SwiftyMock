@@ -23,4 +23,10 @@ class RoboKittenMock: RoboKitten {
     func canJumpAt(x x: Int, y: Int) -> Bool {
         return stubCall(canJump, argument: (x: x, y: y))
     }
+
+    let rest = FunctionCall<Bool -> (), ()>()
+    func rest(completed: Bool -> ()) {
+        return stubCall(rest, argument: completed, defaultValue: ())
+    }
+
 }

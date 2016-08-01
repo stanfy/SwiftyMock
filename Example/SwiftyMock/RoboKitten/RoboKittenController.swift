@@ -54,4 +54,13 @@ class RoboKittenController {
         return .SUCCESS
     }
 
+    func rest(completion: Result -> ()) {
+        kitten.rest { successfuly in
+            switch successfuly {
+                case true: completion(.SUCCESS)
+                case false: completion(.FAILURE)
+            }
+        }
+    }
+
 }
