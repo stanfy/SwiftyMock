@@ -12,12 +12,12 @@ import Nimble
 @testable import SwiftyMock
 
 protocol Calculator {
-    func sum(left: Int, right: Int) -> Int
+    func sum(left left: Int, right: Int) -> Int
 }
 
 class TestCalculator: Calculator {
     let sum = FunctionCall<(left: Int, right: Int), Int>()
-    func sum(left: Int, right: Int) -> Int {
+    func sum(left left: Int, right: Int) -> Int {
         return stubCall(sum, argument: (left: left, right: right))
     }
 }
@@ -49,7 +49,7 @@ class SwiftyMockCallsSpec: QuickSpec {
                 }
                 context("when calling method before stubbing") {
                     xit("should fail with assertion") {
-                        expect { sut.sum(1,right: 2) }.to(raiseException())
+                        expect { sut.sum(left: 1,right: 2) }.to(raiseException())
                     }
                 }
                 context("when calling stubbed method") {
@@ -58,19 +58,19 @@ class SwiftyMockCallsSpec: QuickSpec {
                             sut.sum.returns(12)
                         }
                         it("should return stubbed value") {
-                            expect(sut.sum(1,right:2)).to(equal(12))
+                            expect(sut.sum(left: 1,right:2)).to(equal(12))
                         }
                         it("should have calls count equal number of calls") {
-                            sut.sum(1,right:2)
+                            sut.sum(left: 1,right:2)
                             expect(sut.sum.callsCount).to(equal(1))
                             
-                            sut.sum(2,right:3)
-                            sut.sum(3,right:5)
+                            sut.sum(left: 2,right:3)
+                            sut.sum(left: 3,right:5)
                             expect(sut.sum.callsCount).to(equal(3))
                         }
                         
                         it("tell that method was called") {
-                            sut.sum(1,right:2)
+                            sut.sum(left: 1,right:2)
                             expect(sut.sum.called).to(beTruthy())
                         }
                     }
@@ -79,20 +79,20 @@ class SwiftyMockCallsSpec: QuickSpec {
                             sut.sum.performs { $0.left - $0.right }
                         }
                         it("should calculate method based on the stubbed block") {
-                            expect(sut.sum(1, right:2)).to(equal(-1))
-                            expect(sut.sum(3, right:2)).to(equal(1))
+                            expect(sut.sum(left: 1, right:2)).to(equal(-1))
+                            expect(sut.sum(left: 3, right:2)).to(equal(1))
                         }
                         it("should have calls count equal number of calls") {
-                            sut.sum(1,right:2)
+                            sut.sum(left: 1,right:2)
                             expect(sut.sum.callsCount).to(equal(1))
                             
-                            sut.sum(2,right:3)
-                            sut.sum(3,right:5)
+                            sut.sum(left: 2,right:3)
+                            sut.sum(left: 3,right:5)
                             expect(sut.sum.callsCount).to(equal(3))
                         }
                         
                         it("tell that method was called") {
-                            sut.sum(1,right:2)
+                            sut.sum(left: 1,right:2)
                             expect(sut.sum.called).to(beTruthy())
                         }
                     }
@@ -104,7 +104,7 @@ class SwiftyMockCallsSpec: QuickSpec {
                         }
 
                         it("should use logic stub instead of value") {
-                            expect(sut.sum(15, right:12)).to(equal(27))
+                            expect(sut.sum(left: 15, right:12)).to(equal(27))
                         }
                     }
                 }
@@ -117,13 +117,13 @@ class SwiftyMockCallsSpec: QuickSpec {
                     }
                     context("when parameters matching filter") {
                         it("should return filter srubbed value") {
-                            expect(sut.sum(12,right:2)).to(equal(0))
-                            expect(sut.sum(0,right:15)).to(equal(7))
+                            expect(sut.sum(left: 12,right:2)).to(equal(0))
+                            expect(sut.sum(left: 0,right:15)).to(equal(7))
                         }
                     }
                     context("when parameters doesn't match filters") {
                         it("should return default stubbed value") {
-                            expect(sut.sum(13,right:2)).to(equal(10))
+                            expect(sut.sum(left: 13,right:2)).to(equal(10))
                         }
                     }
                 }
@@ -136,13 +136,13 @@ class SwiftyMockCallsSpec: QuickSpec {
                     }
                     context("when parameters matching filter") {
                         it("should return call filter-based block") {
-                            expect(sut.sum(0,right:2)).to(equal(0))
-                            expect(sut.sum(15,right:0)).to(equal(12))
+                            expect(sut.sum(left: 0,right:2)).to(equal(0))
+                            expect(sut.sum(left: 15,right:0)).to(equal(12))
                         }
                     }
                     context("when parameters doesn't match filters") {
                         it("should return call default stubbed block") {
-                            expect(sut.sum(13,right:2)).to(equal(15))
+                            expect(sut.sum(left: 13,right:2)).to(equal(15))
                         }
                     }
                 }
@@ -155,17 +155,16 @@ class SwiftyMockCallsSpec: QuickSpec {
                     }
                     context("when parameters matching filter") {
                         it("should return calculated with stub value") {
-                            expect(sut.sum(12,right:2)).to(equal(14))
-                            expect(sut.sum(12,right:12)).to(equal(24))
+                            expect(sut.sum(left: 12,right:2)).to(equal(14))
+                            expect(sut.sum(left: 12,right:12)).to(equal(24))
                         }
                     }
                     context("when parameters doesn't match filters") {
                         it("should return default stubbed value") {
-                            expect(sut.sum(13,right:2)).to(equal(17))
+                            expect(sut.sum(left: 13,right:2)).to(equal(17))
                         }
                     }
                 }
-
             }
         }
     }

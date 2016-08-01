@@ -16,5 +16,5 @@ install:
 - gem install xcpretty --no-rdoc --no-ri --no-document --quiet
 
 script:
-- set -o pipefail && xcodebuild test -workspace Example/SwiftyMock.xcworkspace -scheme SwiftyMock-Example -sdk iphonesimulator9.3 ONLY_ACTIVE_ARCH=NO | xcpretty -c
+- set -o pipefail && xcodebuild test -workspace Example/SwiftyMock.xcworkspace -scheme SwiftyMock-Tests -sdk iphonesimulator9.3 ONLY_ACTIVE_ARCH=NO | xcpretty -c
 - pod lib lint --quick --allow-warnings
