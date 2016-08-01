@@ -21,8 +21,7 @@ public class ReactiveCall<Arg, Value, Error: ErrorType>: FunctionCall<Arg, Value
 // Stub Signal Producer Call
 
 public func stubCall<Arg, Value, Error: ErrorType>(call: ReactiveCall<Arg, Value, Error>, argument: Arg) -> SignalProducer<Value, Error> {
-    call.callsCount += 1
-    call.capturedArguments += [argument]
+    call.capture(argument)
     
     // Value presence has higher priority over error
     // If both Value and Error set, then Value is chosen

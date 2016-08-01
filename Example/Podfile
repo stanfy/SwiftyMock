@@ -1,7 +1,7 @@
 use_frameworks!
 
 def reusePods
-  pod 'SwiftyMock/Core', :path => '../'
+  pod 'SwiftyMock/ReactiveCocoa', :path => '../'
 end
 
 def reuseTestPods

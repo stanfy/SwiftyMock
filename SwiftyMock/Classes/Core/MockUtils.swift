@@ -41,11 +41,15 @@ public class FunctionCall<Arg, Value> {
     }
     
     public init() {}
+    
+    func capture(argument: Arg) {
+        callsCount += 1
+        capturedArguments += [argument]
+    }
 }
 
 public func stubCall<Arg, Value>(call: FunctionCall<Arg, Value>, argument: Arg, defaultValue: Value? = nil)  -> Value {
-    call.callsCount += 1
-    call.capturedArguments += [argument]
+    call.capture(argument)
     
     for stub in call.stubbedBlocks {
         if stub.filter(argument) {
