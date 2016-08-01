@@ -84,7 +84,7 @@ kittenMock.jump.returns(20)
 ```
 
 Sometimes, you have bit more complex rules when and what to return   
-```
+```swift
 // You can add as many filters you like
 // More specific rules overrides general rules
 kittenMock.canJump
