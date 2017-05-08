@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'SwiftyMock'
-  s.version          = '0.1.1'
+  s.version          = '0.2.1'
   s.summary          = 'Some helpers to do Mocking in Swift.'
   s.description      = <<-DESC
     Some helpers to do Mocking in Swift.
