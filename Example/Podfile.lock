@@ -6,8 +6,8 @@ PODS:
   - ReactiveSwift (1.1.1):
     - Result (~> 3.2)
   - Result (3.2.1)
-  - SwiftyMock/Core (0.1.1)
-  - SwiftyMock/ReactiveCocoa (0.1.1):
+  - SwiftyMock/Core (0.2.1)
+  - SwiftyMock/ReactiveCocoa (0.2.1):
     - ReactiveCocoa (~> 5.0.3)
     - SwiftyMock/Core
 
@@ -26,7 +26,7 @@ SPEC CHECKSUMS:
   ReactiveCocoa: 066a855f613fb72f68258771095805fdb10312d2
   ReactiveSwift: 2489549e3231a6ff68ec99f3d320bb264f10ba0a
   Result: 2453a22e5c5b11c0c3a478736e82cd02f763b781
-  SwiftyMock: fafa8c2ea7ca99749e9b29bb2ae6f1861846502a
+  SwiftyMock: a7c0b6956442c3609c39a422b1fa62a63f5e241e
 
 PODFILE CHECKSUM: db15c41e2e47f23aeae8478ce5eee3b0c3520bd6
 
