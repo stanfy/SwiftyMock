@@ -1,4 +1,5 @@
 use_frameworks!
+inhibit_all_warnings!
 
 def reusePods
   pod 'SwiftyMock/ReactiveCocoa', :path => '../'
@@ -6,8 +7,8 @@ end
 
 def reuseTestPods
   reusePods
-  pod 'Quick', '~> 0.8'
-  pod 'Nimble', '~> 3.0'
+  pod 'Quick', '~> 1.1.0'
+  pod 'Nimble', '~> 7.0.0'
 end
 
 target 'SwiftyMock_Example' do

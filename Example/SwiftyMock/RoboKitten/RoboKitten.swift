@@ -6,8 +6,8 @@
 import Foundation
 
 protocol RoboKitten {
-    func batteryStatus() -> Int
-    func jump(x x: Int, y: Int) -> Int
-    func canJumpAt(x x: Int, y: Int) -> Bool
-    func rest(completed: Bool -> () )
+    @discardableResult func batteryStatus() -> Int
+    func jump(x: Int, y: Int)
+    @discardableResult func canJumpAt(x: Int, y: Int) -> Bool
+    func rest(_ completed: @escaping (Bool) -> () )
 }

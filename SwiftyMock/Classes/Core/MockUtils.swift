@@ -5,36 +5,36 @@
 
 // MARK: Function Call Mock/Stub/Spy
 
-public class FunctionCall<Arg, Value> {
+open class FunctionCall<Arg, Value> {
     
     // Spying Call's passed Arguments
     
-    public private(set) var callsCount: Int = 0
-    public var called: Bool {
+    open fileprivate(set) var callsCount: Int = 0
+    open var called: Bool {
         return callsCount > 0
     }
     
     // Stubbing Call with predefined Value
-    public private(set) var stubbedValue: Value?
-    public func returns(value: Value) {
+    open fileprivate(set) var stubbedValue: Value?
+    open func returns(_ value: Value) {
         stubbedValue = value
     }
     
     // Stubbing Call with prefefined logic
-    public private(set) var stubbedBlock: (Arg -> Value)?
-    public func performs(block: Arg -> Value) {
+    open fileprivate(set) var stubbedBlock: ((Arg) -> Value)?
+    open func performs(_ block: @escaping (Arg) -> Value) {
         stubbedBlock = block
     }
     
-    public private(set) var capturedArguments: [Arg] = []
-    public var capturedArgument: Arg? {
+    open fileprivate(set) var capturedArguments: [Arg] = []
+    open var capturedArgument: Arg? {
         return capturedArguments.last
     }
     
-    private var stubbedBlocks: [ReturnStub<Arg, Value>] = []
+    fileprivate var stubbedBlocks: [ReturnStub<Arg, Value>] = []
     
-    @warn_unused_result(message="Did you forget to call returns?")
-    public func on(filter: Arg -> Bool) -> ReturnContext<Arg, Value> {
+    
+    open func on(_ filter: @escaping (Arg) -> Bool) -> ReturnContext<Arg, Value> {
         let stub = ReturnStub<Arg, Value>(filter: filter)
         stubbedBlocks += [stub]
         return ReturnContext(call: self, stub: stub)
@@ -42,35 +42,35 @@ public class FunctionCall<Arg, Value> {
     
     public init() {}
     
-    func capture(argument: Arg) {
+    func capture(_ argument: Arg) {
         callsCount += 1
         capturedArguments += [argument]
     }
 }
 
-public func stubCall<Arg, Value>(call: FunctionCall<Arg, Value>, argument: Arg, defaultValue: Value? = nil)  -> Value {
+public func stubCall<Arg, Value>(_ call: FunctionCall<Arg, Value>, argument: Arg, defaultValue: Value? = nil)  -> Value {
     call.capture(argument)
     
     for stub in call.stubbedBlocks {
         if stub.filter(argument) {
-            if case let .Some(stubbedBlock) = stub.stubbedBlock {
+            if case let .some(stubbedBlock) = stub.stubbedBlock {
                 return stubbedBlock(argument)
             }
 
-            if case let .Some(stubbedValue) = stub.stubbedValue {
+            if case let .some(stubbedValue) = stub.stubbedValue {
                 return stubbedValue
             }
         }
     }
 
-    if case let .Some(stubbedBlock) = call.stubbedBlock {
+    if case let .some(stubbedBlock) = call.stubbedBlock {
         return stubbedBlock(argument)
     }
     
-    if case let .Some(stubbedValue) = call.stubbedValue {
+    if case let .some(stubbedValue) = call.stubbedValue {
         return stubbedValue
     }
-    if case let .Some(defaultValue) = defaultValue {
+    if case let .some(defaultValue) = defaultValue {
         return defaultValue
     }
 
@@ -81,7 +81,7 @@ public func stubCall<Arg, Value>(call: FunctionCall<Arg, Value>, argument: Arg, 
 
 // MARK: Helpers for stubbing
 
-public class ReturnContext<Arg, Value> {
+open class ReturnContext<Arg, Value> {
     let call: FunctionCall<Arg, Value>
     let stub: ReturnStub<Arg, Value>
     init(call: FunctionCall<Arg, Value>, stub: ReturnStub<Arg, Value>) {
@@ -89,35 +89,35 @@ public class ReturnContext<Arg, Value> {
         self.stub = stub
     }
     
-    public func returns(value: Value) -> FunctionCall<Arg, Value> {
+    @discardableResult open func returns(_ value: Value) -> FunctionCall<Arg, Value> {
         stub.stubbedValue = value
         return call
     }
     
-    public func performs(block: (Arg -> Value)) -> FunctionCall<Arg, Value> {
+    @discardableResult open func performs(_ block: @escaping ((Arg) -> Value)) -> FunctionCall<Arg, Value> {
         stub.stubbedBlock = block
         return call
     }
 }
 
-public class ReturnStub<Arg, Value> {
-    let filter: Arg -> Bool
-    private(set) var stubbedValue: Value?
-    private(set) var stubbedBlock: (Arg -> Value)?
+open class ReturnStub<Arg, Value> {
+    let filter: (Arg) -> Bool
+    fileprivate(set) var stubbedValue: Value?
+    fileprivate(set) var stubbedBlock: ((Arg) -> Value)?
     
-    init(filter: Arg -> Bool) {
+    init(filter: @escaping (Arg) -> Bool) {
         self.filter = filter
     }
 }
 
 // MARK: Function Call Mock/Stub/Spy Without Arguments
 
-public class FunctionVoidCall<Value>: FunctionCall<Void, Value> {
+open class FunctionVoidCall<Value>: FunctionCall<Void, Value> {
     public override init() {
         super.init()
     }
 }
 
-public func stubCall<Value>(call: FunctionCall<Void, Value>, defaultValue: Value? = nil) -> Value {
+public func stubCall<Value>(_ call: FunctionCall<Void, Value>, defaultValue: Value? = nil) -> Value {
     return stubCall(call, argument: (), defaultValue: defaultValue)
 }

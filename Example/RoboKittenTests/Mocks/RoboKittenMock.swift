@@ -14,19 +14,20 @@ class RoboKittenMock: RoboKitten {
         return stubCall(batteryStatusCall, argument:())
     }
 
-    let jump = FunctionCall<(x: Int, y: Int), Int>()
-    func jump(x x: Int, y: Int) -> Int {
-        return stubCall(jump, argument: (x: x, y: y))
+    let jump = FunctionCall<(x: Int, y: Int), ()>()
+    func jump(x: Int, y: Int)  {
+        return stubCall(jump, argument: (x: x, y: y), defaultValue:())
     }
     
     let canJump = FunctionCall<(x: Int, y: Int), Bool>()
-    func canJumpAt(x x: Int, y: Int) -> Bool {
+    func canJumpAt(x: Int, y: Int) -> Bool {
         return stubCall(canJump, argument: (x: x, y: y))
     }
 
-    let rest = FunctionCall<Bool -> (), ()>()
-    func rest(completed: Bool -> ()) {
-        return stubCall(rest, argument: completed, defaultValue: ())
+    let rest = FunctionCall<(Bool) -> (), ()>()
+    func rest(_ completed: @escaping (Bool) -> ()) {
+        stubCall(rest, argument: completed, defaultValue: ())
+//        return stubCall(restCall, argument: completed, defaultValue: ())
     }
 
 }

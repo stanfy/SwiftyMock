@@ -5,11 +5,11 @@
 
 // MARK: Reactive Function Call Mock/Stub/Spy
 
-import ReactiveCocoa
+import ReactiveSwift
 
-public class ReactiveCall<Arg, Value, Error: ErrorType>: FunctionCall<Arg, Value> {
-    public private(set) var stubbedError: Error?
-    public func fails(error: Error) {
+open class ReactiveCall<Arg, Value, Err: Error>: FunctionCall<Arg, Value> {
+    open fileprivate(set) var stubbedError: Err?
+    open func fails(_ error: Err) {
         stubbedError = error
     }
     
@@ -20,7 +20,7 @@ public class ReactiveCall<Arg, Value, Error: ErrorType>: FunctionCall<Arg, Value
 
 // Stub Signal Producer Call
 
-public func stubCall<Arg, Value, Error: ErrorType>(call: ReactiveCall<Arg, Value, Error>, argument: Arg) -> SignalProducer<Value, Error> {
+public func stubCall<Arg, Value, Err: Error>(_ call: ReactiveCall<Arg, Value, Err>, argument: Arg) -> SignalProducer<Value, Err> {
     call.capture(argument)
     
     // Value presence has higher priority over error
@@ -39,19 +39,19 @@ public func stubCall<Arg, Value, Error: ErrorType>(call: ReactiveCall<Arg, Value
 
 // MARK: Reactive Function Call Mock/Stub/Spy Without Arguments
 
-public class ReactiveVoidCall<Value, Error: ErrorType>: ReactiveCall<Void, Value, Error> {
+open class ReactiveVoidCall<Value, Err: Error>: ReactiveCall<Void, Value, Err> {
     public override init() {
         super.init()
     }
 }
 
-public func stubCall<Value, Error: ErrorType>(call: ReactiveCall<Void, Value, Error>) -> SignalProducer<Value, Error> {
+public func stubCall<Value, Err: Error>(_ call: ReactiveCall<Void, Value, Err>) -> SignalProducer<Value, Err> {
     return stubCall(call, argument: ())
 }
 
 // Stub Action Call
 
-public func stubCall<Value, Error: ErrorType>(call: ReactiveCall<Void, Value, Error>) -> Action<Void, Value, Error> {
+public func stubCall<Value, Err: Error>(_ call: ReactiveCall<Void, Value, Err>) -> Action<Void, Value, Err> {
     return Action {
         stubCall(call)
     }

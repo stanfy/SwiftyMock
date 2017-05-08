@@ -5,15 +5,15 @@
 
 import Foundation
 
-enum BatteyStatus {
-    case LOW
-    case NORMAL
-    case FULL
+enum BatteyStatus: Equatable {
+    case low
+    case normal
+    case full
 }
 
 enum Result {
-    case SUCCESS
-    case FAILURE
+    case success
+    case failure
 }
 
 
@@ -24,43 +24,44 @@ class RoboKittenController {
         self.kitten = kitten
     }
     
-    func batteryStatus() -> BatteyStatus {
+    @discardableResult func batteryStatus() -> BatteyStatus {
         if kitten.batteryStatus() >= 100 {
-            return .FULL
+            return .full
         }
         if (kitten.batteryStatus() < 10) {
-            return .LOW
+            return .low
         }
-        return .NORMAL
+        return .normal
     }
     
-    func jumpAt(x x: Int, y: Int) -> Result {
+    @discardableResult func jumpAt(x: Int, y: Int) -> Result {
         if kitten.canJumpAt(x: x, y: y) {
             kitten.jump(x: x, y: y)
-            return .SUCCESS
+            return .success
         }
-        return .FAILURE
+        return .failure
     }
 
-    func jump(inSequence sequence: [(x: Int, y: Int)]) -> Result {
+     @discardableResult func jump(inSequence sequence: [(x: Int, y: Int)]) -> Result {
         for coords in sequence {
             if !kitten.canJumpAt(x: coords.x, y: coords.y) {
-                return .FAILURE
+                return .failure
             }
         }
         for coords in sequence {
             kitten.jump(x: coords.x, y: coords.y)
         }
-        return .SUCCESS
+        return .success
     }
 
-    func rest(completion: Result -> ()) {
+    func rest(_ completion: @escaping (Result) -> ()) {
         kitten.rest { successfuly in
             switch successfuly {
-                case true: completion(.SUCCESS)
-                case false: completion(.FAILURE)
+                case true: completion(.success)
+                case false: completion(.failure)
             }
         }
     }
 
 }
+

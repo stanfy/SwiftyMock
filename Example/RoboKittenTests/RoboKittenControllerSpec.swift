@@ -7,10 +7,11 @@
 //
 
 import Foundation
+@testable import SwiftyMock_Example
+
 import Quick
 import Nimble
 import SwiftyMock
-@testable import SwiftyMock_Example
 
 class RoboKittenControllerSpec: QuickSpec {
     override func spec() {
@@ -25,22 +26,22 @@ class RoboKittenControllerSpec: QuickSpec {
             describe("when checked for battery status") {
                 it("should return LOW battery status for battery level < 10") {
                     kittenMock.batteryStatusCall.returns(5)
-                    expect(sut.batteryStatus()).to(equal(BatteyStatus.LOW))
+                    expect(sut.batteryStatus()).to(equal(BatteyStatus.low))
                 }
                 it("should return FULL battery status for battery level >= 100") {
                     kittenMock.batteryStatusCall.returns(100)
-                    expect(sut.batteryStatus()).to(equal(BatteyStatus.FULL))
+                    expect(sut.batteryStatus()).to(equal(BatteyStatus.full))
                     
                     kittenMock.batteryStatusCall.returns(210)
-                    expect(sut.batteryStatus()).to(equal(BatteyStatus.FULL))
+                    expect(sut.batteryStatus()).to(equal(BatteyStatus.full))
                 }
                 
                 it("should return NORMAL battery status for battery level between 10..100") {
                     kittenMock.batteryStatusCall.returns(15)
-                    expect(sut.batteryStatus()).to(equal(BatteyStatus.NORMAL))
+                    expect(sut.batteryStatus()).to(equal(BatteyStatus.normal))
                     
                     kittenMock.batteryStatusCall.returns(30)
-                    expect(sut.batteryStatus()).to(equal(BatteyStatus.NORMAL))
+                    expect(sut.batteryStatus()).to(equal(BatteyStatus.normal))
                 }
             }
             
@@ -62,9 +63,6 @@ class RoboKittenControllerSpec: QuickSpec {
                 context("and kitten can jump there") {
                     beforeEach {
                         kittenMock.canJump.returns(true)
-                        
-                        // We need to stub method, since there's no default value was setup in mock
-                        kittenMock.jump.returns(10)
                     }
                     it("should actually ask kitten to jump") {
                         sut.jumpAt(x: 15, y: 30)
@@ -82,23 +80,21 @@ class RoboKittenControllerSpec: QuickSpec {
                     }
                     
                     it("return success result") {
-                        expect(sut.jumpAt(x: 10, y: 20)).to(equal(Result.SUCCESS))
+                        expect(sut.jumpAt(x: 10, y: 20)).to(equal(Result.success))
                     }
                 }
                 
                 context("and kitten cannot jump there") {
                     beforeEach {
                         kittenMock.canJump.returns(false)
-                        
-                        // We need to stub method, since there's no default value was setup in mock
-                        kittenMock.jump.returns(10)
                     }
+
                     it("should shouldn't ask kitten to jump") {
                         sut.jumpAt(x: 15, y: 30)
                         expect(kittenMock.jump.called).to(beFalsy())
                     }
                     it("shouldreturn failure result") {
-                        expect(sut.jumpAt(x: 10, y: 20)).to(equal(Result.FAILURE))
+                        expect(sut.jumpAt(x: 10, y: 20)).to(equal(Result.failure))
                     }
                 }
                 
@@ -108,12 +104,9 @@ class RoboKittenControllerSpec: QuickSpec {
                 context("and kitten can perform all of them") {
                     beforeEach {
                         kittenMock.canJump.returns(true)
-                        
-                        // We need to stub method, since there's no default value was setup in mock
-                        kittenMock.jump.returns(4)
                     }
                     it("should return success result") {
-                        expect(sut.jump(inSequence: [(x: 10, y: 20), (x: 12, y: 20)])).to(equal(Result.SUCCESS))
+                        expect(sut.jump(inSequence: [(x: 10, y: 20), (x: 12, y: 20)])).to(equal(Result.success))
                     }
                     
                     it("should call jump on each passed parameter in the correct order") {
@@ -135,15 +128,13 @@ class RoboKittenControllerSpec: QuickSpec {
                             .on { $0.y < 0 }.returns(false)
                             .returns(true)                  // in all other cases
                         
-                        // We need to stub method, since there's no default value was setup in mock
-                        kittenMock.jump.returns(4)
                     }
                     context("and there are some coordinates where kitten cannot jump at in passed in sequence") {
                         it("should return failure result") {
-                            expect(sut.jump(inSequence: [(x: -10, y: 20), (x: 12, y: 20)])).to(equal(Result.FAILURE))
-                            expect(sut.jump(inSequence: [(x: 10, y: -20), (x: 12, y: 20)])).to(equal(Result.FAILURE))
-                            expect(sut.jump(inSequence: [(x: 10, y: -20), (x: -12, y: 20)])).to(equal(Result.FAILURE))
-                            expect(sut.jump(inSequence: [(x: 10, y: -20), (x: 12, y: -20)])).to(equal(Result.FAILURE))
+                            expect(sut.jump(inSequence: [(x: -10, y: 20), (x: 12, y: 20)])).to(equal(Result.failure))
+                            expect(sut.jump(inSequence: [(x: 10, y: -20), (x: 12, y: 20)])).to(equal(Result.failure))
+                            expect(sut.jump(inSequence: [(x: 10, y: -20), (x: -12, y: 20)])).to(equal(Result.failure))
+                            expect(sut.jump(inSequence: [(x: 10, y: -20), (x: 12, y: -20)])).to(equal(Result.failure))
                         }
                         it("should not ask kitten to jump at all") {
                             sut.jump(inSequence: [(x: -10, y: 20), (x: 12, y: 20)])
@@ -154,7 +145,7 @@ class RoboKittenControllerSpec: QuickSpec {
                     
                     context("and there are no coordinates where kitten cannot jump at in passed in sequence") {
                         it("should return success result in case if there's no coords where kittent cannot jump at") {
-                            expect(sut.jump(inSequence: [(x: 10, y: 20), (x: 12, y: 20)])).to(equal(Result.SUCCESS))
+                            expect(sut.jump(inSequence: [(x: 10, y: 20), (x: 12, y: 20)])).to(equal(Result.success))
                         }
                     }
                 }
@@ -178,7 +169,7 @@ class RoboKittenControllerSpec: QuickSpec {
                         sut.rest { restResult in
                             result = restResult
                         }
-                        expect(result).to(equal(Result.SUCCESS))
+                        expect(result).to(equal(.success))
                     }
                 }
 
@@ -193,7 +184,7 @@ class RoboKittenControllerSpec: QuickSpec {
                         sut.rest { restResult in
                             result = restResult
                         }
-                        expect(result).to(equal(Result.FAILURE))
+                        expect(result).to(equal(.failure))
                     }
                 }
 

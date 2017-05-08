@@ -11,15 +11,14 @@ class RoboKittenV1: RoboKitten {
         return 0
     }
 
-    func jump(x x: Int, y: Int) -> Int {
-        return 0
+    func jump(x: Int, y: Int) {
     }
     
-    func canJumpAt(x x: Int, y: Int) -> Bool {
+    func canJumpAt(x: Int, y: Int) -> Bool {
        return false
     }
     
-    func rest(completed: Bool -> ()) {
+    func rest(_ completed: @escaping (Bool) -> ()) {
         
     }
 }
