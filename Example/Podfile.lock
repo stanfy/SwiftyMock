@@ -1,14 +1,14 @@
 PODS:
-  - Nimble (7.0.0)
+  - Nimble (7.0.2)
   - Quick (1.1.0)
-  - ReactiveCocoa (5.0.3):
-    - ReactiveSwift (~> 1.1)
-  - ReactiveSwift (1.1.1):
+  - ReactiveCocoa (6.0.2):
+    - ReactiveSwift (~> 2.0)
+  - ReactiveSwift (2.0.1):
     - Result (~> 3.2)
-  - Result (3.2.1)
-  - SwiftyMock/Core (0.2.1)
-  - SwiftyMock/ReactiveCocoa (0.2.1):
-    - ReactiveCocoa (~> 5.0.3)
+  - Result (3.2.4)
+  - SwiftyMock/Core (0.2.2)
+  - SwiftyMock/ReactiveCocoa (0.2.2):
+    - ReactiveCocoa (~> 6.0)
     - SwiftyMock/Core
 
 DEPENDENCIES:
@@ -18,16 +18,16 @@ DEPENDENCIES:
 
 EXTERNAL SOURCES:
   SwiftyMock:
-    :path: "../"
+    :path: ../
 
 SPEC CHECKSUMS:
-  Nimble: 874982b605d4d752fcac6be695d13c502de84b1b
+  Nimble: bfe1f814edabba69ff145cb1283e04ed636a67f2
   Quick: dafc587e21eed9f4cab3249b9f9015b0b7a7f71d
-  ReactiveCocoa: 066a855f613fb72f68258771095805fdb10312d2
-  ReactiveSwift: 2489549e3231a6ff68ec99f3d320bb264f10ba0a
-  Result: 2453a22e5c5b11c0c3a478736e82cd02f763b781
-  SwiftyMock: a7c0b6956442c3609c39a422b1fa62a63f5e241e
+  ReactiveCocoa: 9dcbd8275374f35a6e5fcce01a93b860a7b92c44
+  ReactiveSwift: 60a29ff35988a964fd2bb759755cb6594de523fc
+  Result: d2d07204ce72856f1fd9130bbe42c35a7b0fea10
+  SwiftyMock: a99086ff247c7c5fd33e512900f9ac960f0f0d09
 
 PODFILE CHECKSUM: db15c41e2e47f23aeae8478ce5eee3b0c3520bd6
 
-COCOAPODS: 1.2.0
+COCOAPODS: 1.4.0.beta.2
