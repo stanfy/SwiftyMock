@@ -22,7 +22,7 @@ Pod::Spec.new do |s|
 
   s.subspec 'ReactiveCocoa' do |rs|
     rs.dependency 'SwiftyMock/Core'
-    rs.dependency 'ReactiveCocoa', '~> 5.0.3'
+    rs.dependency 'ReactiveCocoa', '~> 6.0'
     rs.source_files = 'SwiftyMock/Classes/ReactiveCocoa/**/*'
   end
 
