@@ -20,7 +20,7 @@ open class ReactiveCall<Arg, Value, Err: Error>: FunctionCall<Arg, Value> {
 
 // Stub Signal Producer Call
 
-public func stubCall<Arg, Value, Err: Error>(_ call: ReactiveCall<Arg, Value, Err>, argument: Arg) -> SignalProducer<Value, Err> {
+public func stubCall<Arg, Value, Err>(_ call: ReactiveCall<Arg, Value, Err>, argument: Arg) -> SignalProducer<Value, Err> {
     call.capture(argument)
     
     // Value presence has higher priority over error
@@ -45,13 +45,13 @@ open class ReactiveVoidCall<Value, Err: Error>: ReactiveCall<Void, Value, Err> {
     }
 }
 
-public func stubCall<Value, Err: Error>(_ call: ReactiveCall<Void, Value, Err>) -> SignalProducer<Value, Err> {
+public func stubCall<Value, Err>(_ call: ReactiveCall<Void, Value, Err>) -> SignalProducer<Value, Err> {
     return stubCall(call, argument: ())
 }
 
 // Stub Action Call
 
-public func stubCall<Value, Err: Error>(_ call: ReactiveCall<Void, Value, Err>) -> Action<Void, Value, Err> {
+public func stubCall<Value, Err>(_ call: ReactiveCall<Void, Value, Err>) -> Action<Void, Value, Err> {
     return Action {
         stubCall(call)
     }

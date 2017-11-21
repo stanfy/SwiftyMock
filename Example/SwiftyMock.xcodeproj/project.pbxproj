@@ -403,12 +403,12 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-SwiftyMock_Tests/Pods-SwiftyMock_Tests-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/ReactiveCocoa-iOS8.3/ReactiveCocoa.framework",
-				"${BUILT_PRODUCTS_DIR}/ReactiveSwift-iOS8.3/ReactiveSwift.framework",
-				"${BUILT_PRODUCTS_DIR}/Result-iOS8.3/Result.framework",
-				"${BUILT_PRODUCTS_DIR}/SwiftyMock-iOS8.3/SwiftyMock.framework",
-				"${BUILT_PRODUCTS_DIR}/Nimble-iOS8.3/Nimble.framework",
-				"${BUILT_PRODUCTS_DIR}/Quick-iOS8.3/Quick.framework",
+				"${BUILT_PRODUCTS_DIR}/ReactiveCocoa/ReactiveCocoa.framework",
+				"${BUILT_PRODUCTS_DIR}/ReactiveSwift/ReactiveSwift.framework",
+				"${BUILT_PRODUCTS_DIR}/Result/Result.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftyMock/SwiftyMock.framework",
+				"${BUILT_PRODUCTS_DIR}/Nimble/Nimble.framework",
+				"${BUILT_PRODUCTS_DIR}/Quick/Quick.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -449,10 +449,10 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-SwiftyMock_Example/Pods-SwiftyMock_Example-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/ReactiveCocoa-iOS8.3/ReactiveCocoa.framework",
-				"${BUILT_PRODUCTS_DIR}/ReactiveSwift-iOS8.3/ReactiveSwift.framework",
-				"${BUILT_PRODUCTS_DIR}/Result-iOS8.3/Result.framework",
-				"${BUILT_PRODUCTS_DIR}/SwiftyMock-iOS8.3/SwiftyMock.framework",
+				"${BUILT_PRODUCTS_DIR}/ReactiveCocoa/ReactiveCocoa.framework",
+				"${BUILT_PRODUCTS_DIR}/ReactiveSwift/ReactiveSwift.framework",
+				"${BUILT_PRODUCTS_DIR}/Result/Result.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftyMock/SwiftyMock.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -488,12 +488,12 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-RoboKittenTests/Pods-RoboKittenTests-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/ReactiveCocoa-iOS9.3/ReactiveCocoa.framework",
-				"${BUILT_PRODUCTS_DIR}/ReactiveSwift-iOS9.3/ReactiveSwift.framework",
-				"${BUILT_PRODUCTS_DIR}/Result-iOS9.3/Result.framework",
-				"${BUILT_PRODUCTS_DIR}/SwiftyMock-iOS9.3/SwiftyMock.framework",
-				"${BUILT_PRODUCTS_DIR}/Nimble-iOS9.3/Nimble.framework",
-				"${BUILT_PRODUCTS_DIR}/Quick-iOS9.3/Quick.framework",
+				"${BUILT_PRODUCTS_DIR}/ReactiveCocoa/ReactiveCocoa.framework",
+				"${BUILT_PRODUCTS_DIR}/ReactiveSwift/ReactiveSwift.framework",
+				"${BUILT_PRODUCTS_DIR}/Result/Result.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftyMock/SwiftyMock.framework",
+				"${BUILT_PRODUCTS_DIR}/Nimble/Nimble.framework",
+				"${BUILT_PRODUCTS_DIR}/Quick/Quick.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -663,7 +663,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -703,7 +703,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
