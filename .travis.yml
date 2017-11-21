@@ -2,7 +2,7 @@
 # * http://www.objc.io/issue-6/travis-ci.html
 # * https://github.com/supermarin/xcpretty#usage
 
-osx_image: xcode8.3
+osx_image: xcode9.1
 
 language: objective-c
 cache: cocoapods
@@ -17,5 +17,5 @@ install:
 - gem install xcpretty --no-rdoc --no-ri --no-document --quiet
 
 script:
-- set -o pipefail && xcodebuild test -workspace Example/SwiftyMock.xcworkspace -scheme SwiftyMock-Tests -sdk iphonesimulator10.3 -destination 'platform=iOS Simulator,name=iPhone 6,OS=10.3' | xcpretty -c
+- set -o pipefail && xcodebuild test -workspace Example/SwiftyMock.xcworkspace -scheme SwiftyMock-Tests -sdk iphonesimulator11.1 -destination 'platform=iOS Simulator,name=iPhone 6,OS=11.1' | xcpretty -c
 - pod lib lint --quick --allow-warnings

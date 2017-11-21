@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'SwiftyMock'
-  s.version          = '0.2.1'
+  s.version          = '0.2.2'
   s.summary          = 'Some helpers to do Mocking in Swift.'
   s.description      = <<-DESC
     Some helpers to do Mocking in Swift.
@@ -22,7 +22,7 @@ Pod::Spec.new do |s|
 
   s.subspec 'ReactiveCocoa' do |rs|
     rs.dependency 'SwiftyMock/Core'
-    rs.dependency 'ReactiveCocoa', '~> 5.0.3'
+    rs.dependency 'ReactiveCocoa', '~> 6.0'
     rs.source_files = 'SwiftyMock/Classes/ReactiveCocoa/**/*'
   end
 
