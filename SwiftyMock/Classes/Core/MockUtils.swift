@@ -31,7 +31,7 @@ open class FunctionCall<Arg, Value> {
         return capturedArguments.last
     }
     
-    fileprivate var stubbedBlocks: [ReturnStub<Arg, Value>] = []
+    open fileprivate(set) var stubbedBlocks: [ReturnStub<Arg, Value>] = []
     
     
     open func on(_ filter: @escaping (Arg) -> Bool) -> ReturnContext<Arg, Value> {

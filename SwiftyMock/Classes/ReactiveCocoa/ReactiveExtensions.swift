@@ -22,6 +22,18 @@ open class ReactiveCall<Arg, Value, Err: Error>: FunctionCall<Arg, Value> {
 
 public func stubCall<Arg, Value, Err>(_ call: ReactiveCall<Arg, Value, Err>, argument: Arg) -> SignalProducer<Value, Err> {
     call.capture(argument)
+
+    for stub in call.stubbedBlocks {
+        if stub.filter(argument) {
+            if case let .some(stubbedBlock) = stub.stubbedBlock {
+                return SignalProducer(value: stubbedBlock(argument))
+            }
+
+            if case let .some(stubbedValue) = stub.stubbedValue {
+                return SignalProducer(value: stubbedValue)
+            }
+        }
+    }
     
     // Value presence has higher priority over error
     // If both Value and Error set, then Value is chosen
