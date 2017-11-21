@@ -3,7 +3,7 @@
 
 // swiftlint:disable line_length
 
-// MARK: Function Call Mock/Stub/Spy
+// MARK: - Function Call Mock/Stub/Spy
 
 open class FunctionCall<Arg, Value> {
     
@@ -31,7 +31,7 @@ open class FunctionCall<Arg, Value> {
         return capturedArguments.last
     }
     
-    open fileprivate(set) var stubbedBlocks: [ReturnStub<Arg, Value>] = []
+    fileprivate var stubbedBlocks: [ReturnStub<Arg, Value>] = []
     
     
     open func on(_ filter: @escaping (Arg) -> Bool) -> ReturnContext<Arg, Value> {
@@ -79,7 +79,7 @@ public func stubCall<Arg, Value>(_ call: FunctionCall<Arg, Value>, argument: Arg
     return call.stubbedValue!
 }
 
-// MARK: Helpers for stubbing
+// MARK: - Helpers for stubbing
 
 open class ReturnContext<Arg, Value> {
     let call: FunctionCall<Arg, Value>
@@ -110,14 +110,10 @@ open class ReturnStub<Arg, Value> {
     }
 }
 
-// MARK: Function Call Mock/Stub/Spy Without Arguments
+// MARK: - Function Call Mock/Stub/Spy Without Arguments
 
-open class FunctionVoidCall<Value>: FunctionCall<Void, Value> {
-    public override init() {
-        super.init()
-    }
-}
+public typealias FunctionVoidCall<Value> = FunctionCall<Void, Value>
 
-public func stubCall<Value>(_ call: FunctionCall<Void, Value>, defaultValue: Value? = nil) -> Value {
+public func stubCall<Value>(_ call: FunctionVoidCall<Value>, defaultValue: Value? = nil) -> Value {
     return stubCall(call, argument: (), defaultValue: defaultValue)
 }
