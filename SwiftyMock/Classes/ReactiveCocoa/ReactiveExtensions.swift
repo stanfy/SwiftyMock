@@ -18,7 +18,7 @@ public typealias ReactiveVoidCall<Value, Err: Error> = FunctionCall<Void, Result
 public func stubCall<Arg, Value, Err>(_ call: ReactiveCall<Arg, Value, Err>, argument: Arg, defaultValue: Result<Value, Err>? = nil) -> SignalProducer<Value, Err> {
 
     // returning empty signal producer if no default value provide, thus preventing failure assert
-    if call.stubbedBlock == nil && call.stubbedValue == nil && defaultValue == nil {
+    if call.stubbedBlocks.isEmpty && call.stubbedBlock == nil && call.stubbedValue == nil && defaultValue == nil {
         call.capture(argument)
         return .empty
     }
