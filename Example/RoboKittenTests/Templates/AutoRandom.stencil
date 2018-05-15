@@ -1,0 +1,51 @@
+import Foundation
+@testable import Betterme
+
+{% macro defineDeclaration var %}{{ var.name }}:{% if var.isClosure and not var.isOptional %} @escaping{% endif %} {{ var.typeName }} = {% call defineRandom var %}{% endmacro %}
+{% macro defineRandom var %}{% if var.isClosure %}{}{% else %}.random(){% endif %}{% endmacro %}
+
+{% for type in types.implementing.AutoRandom|!enum %}
+
+extension {{ type.name }}: Random {
+	static func random() -> {{ type.name }} {
+        return .restrictedRandom()
+    }
+
+    static func restrictedRandom(
+    	{% for var in type.variables %}
+        {% if not var.name == "hashValue" %}
+    	{% if forloop.last %}
+        {% call defineDeclaration var %}
+		{% else %}
+		{% call defineDeclaration var %},
+		{% endif %}
+        {% endif %}
+    	{% endfor %}
+    ) -> {{ type.name }} {
+        return {{ type.name }}(
+            {% for var in type.variables %}
+    {% if not var.name == "hashValue" %}
+    		{% if forloop.last %}
+			{{ var.name }}: {{ var.name }}
+			{% else %}
+			{{ var.name }}: {{ var.name }},
+			{% endif %}
+            {% endif %}
+    		{% endfor %}
+        )
+    }
+}
+{% endfor %}
+
+{% for type in types.implementing.AutoRandom|enum %}
+extension {{ type.name }}: Random {
+	static func random() -> {{ type.name }} {
+        switch arc4random_uniform({{ type.cases.count }}) {
+        	{% for case in type.cases %}
+        	case {{ forloop.counter0 }}: return .{{ case.name }}{% if case.hasAssociatedValue %}({% for associated in case.associatedValues %}{% if associated.externalName %}{{ associated.externalName }}: {% endif %}.random(){% endfor %}){% endif %}
+        	{% endfor %}
+        	default: return {{ .type.cases.first.name }}
+        }
+    }
+}
+{% endfor %}

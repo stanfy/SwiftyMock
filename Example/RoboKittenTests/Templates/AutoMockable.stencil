@@ -1,0 +1,54 @@
+import Foundation
+import SwiftyMock
+import Result
+@testable import Betterme
+
+{% macro parseFunctionType method %}{% if method.parameters.count == 0 %}FunctionVoidCall{% else %}FunctionCall{% endif %}{% endmacro %}
+
+{% macro defineReturn method %}{% if not method.returnTypeName.isVoid %}return {% endif %}{% endmacro %}
+{% macro parseArguments method %}{% if method.parameters.count == 1 %}{{ method.parameters.first.typeName }}{% else %}({% for param in method.parameters %}{{ param.name }}: {{ param.typeName|replace:"@escaping ","" }}{% if not forloop.last %}, {% endif %}{% endfor %}){% endif %}{% endmacro %}
+
+{% macro parseParameterName parameter %}{{ parameter.typeAttributes }}{% endmacro %}
+
+{% macro parseArgumentsInMethod method %}{% if method.parameters.count > 0 %}, argument: {% if method.parameters.count == 1 %}{{ method.parameters.first.name }}{% else %}({% for param in method.parameters %}{{ param.name }}: {{ param.name }}{% if not forloop.last %}, {% endif %}{% endfor %}){% endif %}{% endif %}{% endmacro %}
+
+{% macro parseReturn method %}{% if not method.returnTypeName.isVoid %}{{ method.returnTypeName }}{% else %}(){% endif %}{% endmacro %}
+
+{% macro mockOptionalVariable variable %}
+    var {{ variable.name }}: {{ variable.typeName }}
+{% endmacro %}
+
+{% macro mockNonOptionalArrayOrDictionaryVariable variable %}
+    var {{ variable.name }}: {{ variable.typeName }} = {% if variable.isArray %}[]{% elif variable.isDictionary %}[:]{% endif %}
+{% endmacro %}
+
+{% macro mockNonOptionalVariable variable %}
+    {% if variable.type.implements.Random or variable.type.implements.AutoRandom %}
+    var {{ variable.name }} = {{ variable.typeName }}.random()
+    {% else %}
+    var {{ variable.name }}: {{ variable.typeName }} {
+        get { return {% call underlyingMockedVariableName variable %} }
+        set(value) { {% call underlyingMockedVariableName variable %} = value }
+    }
+    var {% call underlyingMockedVariableName variable %}: {{ variable.typeName }}!
+    {% endif %}
+{% endmacro %}
+
+{% macro underlyingMockedVariableName variable %}underlying{{ variable.name|upperFirstLetter }}{% endmacro %}
+
+{% macro parseDefault method %}{% if method.returnTypeName.isVoid %}(){% else %}{% if method.returnTypeName|contains:"Signal" %}.empty{% elif method.returnType.implements.Random or method.returnType.implements.AutoRandom %}{{ method.returnTypeName }}.random(){% else %}Fake{{ method.returnTypeName }}(){%endif%}{% endif %}{% endmacro %}
+
+{% for type in types.protocols where type.based.AutoMock %}
+final class Fake{{ type.name }}: {{ type.name }} {
+    {% for variable in type.allVariables|!definedInExtension %}
+        {% if variable.isOptional %}{% call mockOptionalVariable variable %}{% elif variable.isArray or variable.isDictionary %}{% call mockNonOptionalArrayOrDictionaryVariable variable %}{% else %}{% call mockNonOptionalVariable variable %}{% endif %}
+    {% endfor %}
+    {% for method in type.allMethods|!definedInExtension %}
+
+    let {{ method.shortName }}Call = {% call parseFunctionType method %}<{% if method.parameters.count > 0 %}{% call parseArguments method %}, {% endif %}{% call parseReturn method %}>()
+    func {{ method.name }}{% if method.throws %} throws{% endif %}{% if not method.returnTypeName.isVoid %} -> {{ method.returnTypeName }}{% endif %} {
+        {% call defineReturn method %}stubCall({{ method.shortName }}Call{% call parseArgumentsInMethod method %}, defaultValue: {% call parseDefault method %})
+    }
+    {% endfor %}
+}
+{% endfor %}
