@@ -1,5 +1,5 @@
 import Foundation
-@testable import Betterme
+{% if argument.testable %}@testable import {{ argument.testable }}{% endif %}
 
 {% macro defineDeclaration var %}{{ var.name }}:{% if var.isClosure and not var.isOptional %} @escaping{% endif %} {{ var.typeName }} = {% call defineRandom var %}{% endmacro %}
 {% macro defineRandom var %}{% if var.isClosure %}{}{% else %}.random(){% endif %}{% endmacro %}

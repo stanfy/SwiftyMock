@@ -1,7 +1,6 @@
 import Foundation
 import SwiftyMock
-import Result
-@testable import Betterme
+{% if argument.testable %}@testable import {{ argument.testable }}{% endif %}
 
 {% macro parseFunctionType method %}{% if method.parameters.count == 0 %}FunctionVoidCall{% else %}FunctionCall{% endif %}{% endmacro %}
 
