@@ -48,8 +48,8 @@ class SwiftyMockCallsSpec: QuickSpec {
                     
                 }
                 context("when calling method before stubbing") {
-                    xit("should fail with assertion") {
-                        expect { sut.sum(left: 1,right: 2) }.to(raiseException())
+                    it("should fail with assertion") {
+                        expect { sut.sum(left: 1,right: 2) }.to(throwAssertion())
                     }
                 }
                 context("when calling stubbed method") {
@@ -90,19 +90,16 @@ class SwiftyMockCallsSpec: QuickSpec {
                             sut.sum(left: 3,right:5)
                             expect(sut.sum.callsCount).to(equal(3))
                         }
-                        
-                        it("tell that method was called") {
+                        it("should tell that method was called") {
                             sut.sum(left: 1,right:2)
                             expect(sut.sum.called).to(beTruthy())
                         }
                     }
-                    
                     context("with logic and value stub") {
                         beforeEach {
                             sut.sum.returns(12)
                             sut.sum.performs { $0.left + $0.right}
                         }
-
                         it("should use logic stub instead of value") {
                             expect(sut.sum(left: 15, right:12)).to(equal(27))
                         }

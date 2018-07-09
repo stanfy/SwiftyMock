@@ -3,3 +3,5 @@ Example/Pods
 Example/SwiftyMock.xcodeproj/xcuserdata
 Example/SwiftyMock.xcworkspace/xcuserdata
 Example/.idea
+.DS_Store
+*.un~

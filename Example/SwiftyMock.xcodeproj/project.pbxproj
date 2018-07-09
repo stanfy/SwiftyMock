@@ -15,6 +15,8 @@
 		607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
 		A7D119AA1D500828F6B64159 /* Pods_RoboKittenTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A380849D11951D85498E493C /* Pods_RoboKittenTests.framework */; };
+		D21AF4631FC62DF600C0DC5F /* SwiftyMockReactiveCallsSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = D21AF4611FC62CFF00C0DC5F /* SwiftyMockReactiveCallsSpec.swift */; };
+		D21AF4661FC638F200C0DC5F /* ReactiveMatchers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D21AF4641FC6324400C0DC5F /* ReactiveMatchers.swift */; };
 		E434BE281D4AAE86000E7125 /* SwiftyMockCallsSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E434BE271D4AAE86000E7125 /* SwiftyMockCallsSpec.swift */; };
 		E481D6901D4DDE61000E73AE /* RoboKittenControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E481D68F1D4DDE61000E73AE /* RoboKittenControllerSpec.swift */; };
 		EEDBE358155D115C15126670 /* RoboKitten.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDBEBCC4DF10B0C24246892 /* RoboKitten.swift */; };
@@ -58,6 +60,8 @@
 		98A466BCCB5D6510F97AD7B2 /* SwiftyMock.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = SwiftyMock.podspec; path = ../SwiftyMock.podspec; sourceTree = "<group>"; };
 		A380849D11951D85498E493C /* Pods_RoboKittenTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RoboKittenTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE3E75F38E5B31874FC7F8C4 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		D21AF4611FC62CFF00C0DC5F /* SwiftyMockReactiveCallsSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftyMockReactiveCallsSpec.swift; sourceTree = "<group>"; };
+		D21AF4641FC6324400C0DC5F /* ReactiveMatchers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactiveMatchers.swift; sourceTree = "<group>"; };
 		E434BE271D4AAE86000E7125 /* SwiftyMockCallsSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyMockCallsSpec.swift; sourceTree = "<group>"; };
 		E481D6831D4DDDBE000E73AE /* RoboKittenTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RoboKittenTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E481D6871D4DDDBE000E73AE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -200,6 +204,8 @@
 			isa = PBXGroup;
 			children = (
 				E434BE271D4AAE86000E7125 /* SwiftyMockCallsSpec.swift */,
+				D21AF4611FC62CFF00C0DC5F /* SwiftyMockReactiveCallsSpec.swift */,
+				D21AF4641FC6324400C0DC5F /* ReactiveMatchers.swift */,
 			);
 			path = Calls;
 			sourceTree = "<group>";
@@ -252,7 +258,6 @@
 				607FACCD1AFB9204008FA782 /* Frameworks */,
 				607FACCE1AFB9204008FA782 /* Resources */,
 				6A3F6B608A6F4760DAAA542E /* [CP] Embed Pods Frameworks */,
-				F756161690AB5F778029E3BB /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -272,7 +277,6 @@
 				607FACE21AFB9204008FA782 /* Frameworks */,
 				607FACE31AFB9204008FA782 /* Resources */,
 				409972991AA0686BA8B28E43 /* [CP] Embed Pods Frameworks */,
-				901EC55706BBAA55BA914339 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -293,7 +297,6 @@
 				E481D6801D4DDDBE000E73AE /* Frameworks */,
 				E481D6811D4DDDBE000E73AE /* Resources */,
 				BECACC2C45CF5517A8987EB9 /* [CP] Embed Pods Frameworks */,
-				BF5E14619C93461FF3220704 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -466,21 +469,6 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SwiftyMock_Example/Pods-SwiftyMock_Example-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		901EC55706BBAA55BA914339 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SwiftyMock_Tests/Pods-SwiftyMock_Tests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		BECACC2C45CF5517A8987EB9 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -509,21 +497,6 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-RoboKittenTests/Pods-RoboKittenTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		BF5E14619C93461FF3220704 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-RoboKittenTests/Pods-RoboKittenTests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		C32EF44E3C05F3402819F3E1 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -540,21 +513,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		F756161690AB5F778029E3BB /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SwiftyMock_Example/Pods-SwiftyMock_Example-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -577,6 +535,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				E434BE281D4AAE86000E7125 /* SwiftyMockCallsSpec.swift in Sources */,
+				D21AF4661FC638F200C0DC5F /* ReactiveMatchers.swift in Sources */,
+				D21AF4631FC62DF600C0DC5F /* SwiftyMockReactiveCallsSpec.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -721,7 +681,7 @@
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -735,7 +695,7 @@
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};
@@ -755,7 +715,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -771,7 +731,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};
@@ -787,7 +747,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.stanfy.RoboKittenTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SwiftyMock_Example.app/SwiftyMock_Example";
 			};
 			name = Debug;
@@ -803,7 +763,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.stanfy.RoboKittenTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SwiftyMock_Example.app/SwiftyMock_Example";
 			};
 			name = Release;

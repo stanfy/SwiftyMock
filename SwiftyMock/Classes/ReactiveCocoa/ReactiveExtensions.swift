@@ -6,53 +6,40 @@
 // MARK: Reactive Function Call Mock/Stub/Spy
 
 import ReactiveSwift
+import Result
 
-open class ReactiveCall<Arg, Value, Err: Error>: FunctionCall<Arg, Value> {
-    open fileprivate(set) var stubbedError: Err?
-    open func fails(_ error: Err) {
-        stubbedError = error
-    }
-    
-    public override init() {
-        super.init()
-    }
-}
+// MARK: - Reactive Call Mock/Stub/Spy
+
+public typealias ReactiveCall<Arg, Value, Err: Error> = FunctionCall<Arg, Result<Value, Err>>
+public typealias ReactiveVoidCall<Value, Err: Error> = FunctionVoidCall<Result<Value, Err>>
 
 // Stub Signal Producer Call
 
-public func stubCall<Arg, Value, Err>(_ call: ReactiveCall<Arg, Value, Err>, argument: Arg) -> SignalProducer<Value, Err> {
-    call.capture(argument)
-    
-    // Value presence has higher priority over error
-    // If both Value and Error set, then Value is chosen
-    
-    if let value = call.stubbedValue {
-        return SignalProducer(value: value)
+public func stubCall<Arg, Value, Err>(_ call: ReactiveCall<Arg, Value, Err>, argument: Arg, defaultValue: Result<Value, Err>? = nil) -> SignalProducer<Value, Err> {
+
+    // returning empty signal producer if no default value provide, thus preventing failure assert
+    if call.stubbedBlocks.isEmpty && call.stubbedBlock == nil && call.stubbedValue == nil && defaultValue == nil {
+        call.capture(argument)
+        return .empty
     }
-    
-    if let error = call.stubbedError {
-        return SignalProducer(error: error)
-    }
-    
-    return .empty
+
+    // otherwise - just repeating normal function stubbing flow
+    let result: Result<Value, Err> = stubCall(call, argument: argument, defaultValue: defaultValue)
+
+    // and returning signal producer depending on result value
+    return SignalProducer(result: result)
 }
 
-// MARK: Reactive Function Call Mock/Stub/Spy Without Arguments
+// MARK: - Function Call Mock/Stub/Spy Without Arguments
 
-open class ReactiveVoidCall<Value, Err: Error>: ReactiveCall<Void, Value, Err> {
-    public override init() {
-        super.init()
-    }
+public func stubCall<Value, Err>(_ call: ReactiveVoidCall<Value, Err>, defaultValue: Result<Value, Err>? = nil) -> SignalProducer<Value, Err> {
+    return stubCall(call, argument: (), defaultValue: defaultValue)
 }
 
-public func stubCall<Value, Err>(_ call: ReactiveCall<Void, Value, Err>) -> SignalProducer<Value, Err> {
-    return stubCall(call, argument: ())
-}
+// MARK: - Stub Action Call
 
-// Stub Action Call
-
-public func stubCall<Value, Err>(_ call: ReactiveCall<Void, Value, Err>) -> Action<Void, Value, Err> {
+public func stubCall<Value, Err>(_ call: ReactiveVoidCall<Value, Err>, defaultValue: Result<Value, Err>? = nil) -> Action<Void, Value, Err> {
     return Action {
-        stubCall(call)
+        stubCall(call, defaultValue: defaultValue)
     }
 }
