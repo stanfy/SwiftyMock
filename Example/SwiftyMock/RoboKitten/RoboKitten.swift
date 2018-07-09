@@ -5,6 +5,7 @@
 
 import Foundation
 
+// sourcery: Mock
 protocol RoboKitten {
     @discardableResult func batteryStatus() -> Int
     func jump(x: Int, y: Int)
