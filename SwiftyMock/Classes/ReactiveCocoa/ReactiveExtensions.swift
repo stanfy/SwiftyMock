@@ -11,7 +11,7 @@ import Result
 // MARK: - Reactive Call Mock/Stub/Spy
 
 public typealias ReactiveCall<Arg, Value, Err: Error> = FunctionCall<Arg, Result<Value, Err>>
-public typealias ReactiveVoidCall<Value, Err: Error> = FunctionCall<Void, Result<Value, Err>>
+public typealias ReactiveVoidCall<Value, Err: Error> = FunctionVoidCall<Result<Value, Err>>
 
 // Stub Signal Producer Call
 

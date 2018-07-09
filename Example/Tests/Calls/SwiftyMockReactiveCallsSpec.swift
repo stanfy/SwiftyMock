@@ -48,10 +48,10 @@ class SwiftyMockReactiveCallsSpec: QuickSpec {
                     it("should have calls count equal to zero") {
                         expect(sut.sum.callsCount).to(equal(0))
                     }
-                    it("should not have captured argumen") {
+                    it("should not have captured argument") {
                         expect(sut.sum.capturedArgument).to(beNil())
                     }
-                    it("should not have captured argumens") {
+                    it("should not have captured arguments") {
                         expect(sut.sum.capturedArguments).to(beEmpty())
                     }
                 }
@@ -68,8 +68,10 @@ class SwiftyMockReactiveCallsSpec: QuickSpec {
                             sut.sum.returns(.success(12))
                         }
 
-                        it("should return stubbed value") {
-                            expect(sut.sum(left: 1, right: 2)).to(sendValue(12))
+                        it("should return stubbed value and complete") {
+                            let result = sut.sum(left: 1, right: 2)
+                            expect(result).to(sendValue(12))
+                            expect(result).to(complete())
                         }
 
                         it("should have calls count equal number of calls") {
@@ -222,12 +224,8 @@ class SwiftyMockReactiveCallsSpec: QuickSpec {
                 context("when calling filtered stubbed with block method") {
                     beforeEach {
                         sut.sum.returns(.success(17))
-                        sut.sum
-                            .on { $0.left == 12 }
-                            .performs { .success($0.left - $0.right) }
-                        sut.sum
-                            .on { $0.right == 42 }
-                            .performs { _ in .failure(TestError()) }
+                        sut.sum.on { $0.left  == 12 }.performs { .success($0.left - $0.right) }
+                        sut.sum.on { $0.right == 42 }.performs { _ in .failure(TestError()) }
                     }
                     context("when parameters matching filter") {
                         it("should return calculated with stub value") {
