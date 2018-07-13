@@ -52,19 +52,19 @@ class RoboKittenMock: RoboKitten {
         return stubCall(batteryStatusCall, argument:())
     }
 
-    let jump = FunctionCall<(x: Int, y: Int), Int>()
+    let jumpCall = FunctionCall<(x: Int, y: Int), Int>()
     func jump(x x: Int, y: Int) -> Int {
-        return stubCall(jump, argument: (x: x, y: y))
+        return stubCall(jumpCall, argument: (x: x, y: y))
     }
     
-    let canJump = FunctionCall<(x: Int, y: Int), Bool>()
+    let canJumpAtCall = FunctionCall<(x: Int, y: Int), Bool>()
     func canJumpAt(x x: Int, y: Int) -> Bool {
-        return stubCall(canJump, argument: (x: x, y: y))
+        return stubCall(canJumpAtCall, argument: (x: x, y: y))
     }
 
-    let rest = FunctionCall<Bool -> (), ()>()
+    let restCall = FunctionCall<Bool -> (), ()>()
     func rest(completed: Bool -> ()) {
-        return stubCall(rest, argument: completed, defaultValue: ())
+        return stubCall(restCall, argument: completed, defaultValue: ())
     }
 }
 ```
@@ -77,17 +77,17 @@ Let's say we want to our mock to return some values
 It's really easy
 ```swift
 // like this
-kittenMock.canJump.returns(false)
+kittenMock.canJumpAtCall.returns(false)
 
 // or like this
-kittenMock.jump.returns(20)
+kittenMock.jumpCall.returns(20)
 ```
 
 Sometimes, you have bit more complex rules when and what to return   
 ```swift
 // You can add as many filters you like
 // More specific rules overrides general rules
-kittenMock.canJump
+kittenMock.canJumpAtCall
     .on { $0.x < 0 }.returns(false)
     .on { $0.y < 0 }.returns(false)
     .returns(true) // in all other cases
@@ -100,7 +100,7 @@ protocol RoboKitten {
     func rest(completed: Bool -> () )
 }
 
-kittenMock.rest.performs { completion in
+kittenMock.restCall.performs { completion in
     print("Mock method was called! Remove this in prod version:))")
     completion(true)
 }
@@ -111,11 +111,11 @@ Also from time to time, you need to be sure that method was called
 ```swift
 beforeEach {
     // Since canjump method need to return somtehing we need to specify return value
-    kittenMock.canJump.returns(false)
+    kittenMock.canJumpAtCall.returns(false)
 }
 it("should ask kitten if it's available to jump there") {
     sut.jumpAt(x: 10, y: 20)
-    expect(kittenMock.canJump.called).to(beTruthy())
+    expect(kittenMock.canJumpAtCall.called).to(beTruthy())
 }
 ```
 
@@ -123,10 +123,10 @@ Or you need to check that method was called exact number of times
 ```swift
 it("should actually ask kitten to jump only once per call") {
     sut.jumpAt(x: 18, y: 23)
-    expect(kittenMock.jump.callsCount).to(equal(1))
+    expect(kittenMock.jumpCall.callsCount).to(equal(1))
     
     sut.jumpAt(x: 80, y: 15)
-    expect(kittenMock.jump.callsCount).to(equal(2))
+    expect(kittenMock.jumpCall.callsCount).to(equal(2))
 }
 ```
 
@@ -134,8 +134,8 @@ All method calls are stored in the mock, so you can easily check if mock was cal
 ```swift
 it("should ask kitten if it's available to jump there with the same coords") {
     sut.jumpAt(x: 10, y: 20)
-    expect(kittenMock.canJump.capturedArgument?.x).to(equal(10))
-    expect(kittenMock.canJump.capturedArgument?.y).to(equal(20))
+    expect(kittenMock.canJumpAtCall.capturedArgument?.x).to(equal(10))
+    expect(kittenMock.canJumpAtCall.capturedArgument?.y).to(equal(20))
 }
 ```
 
@@ -196,7 +196,7 @@ templates:
 output:
   path: ./Example/RoboKittenTests/Mocks/Generated
 args:
-  testable: SwiftyMock # here you specify your application module name, that you're importing for testing
+  testable: SwiftyMock_Example # here you specify your application module name, that you're importing for testing
 ```
 Second, annotate protocols that you want to generate mocks for, with `// sourcery: Mock` comment:
 ```swift
