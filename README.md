@@ -90,7 +90,7 @@ Sometimes, you have bit more complex rules when and what to return
 kittenMock.canJump
     .on { $0.x < 0 }.returns(false)
     .on { $0.y < 0 }.returns(false)
-    .returns(true)                  // in all other cases
+    .returns(true) // in all other cases
     
 ```    
 
@@ -182,4 +182,28 @@ kittenMock.batteryStatusCall.returns(Result(error: ImagineThisIsError))
 Everything else stays the same :)
 
 # Matchers
-SwiftyMock doesn't have it's own matchers, so you can use whatever matchers suits better for you :)
+SwiftyMock doesn't have its own matchers, so you can use whatever matchers suits better for you :)
+
+# Templates
+You can generate mocks automatically with [Sourcery](https://github.com/krzysztofzablocki/Sourcery).    
+First, create sourcery config yml and specify paths to sources, templates, generated output and testable import framework for tests.
+You can take a look at how `.sourcery.yml` here in the root looks like.
+```yml
+sources: 
+  - ./Example/SwiftyMock/RoboKitten
+templates: 
+  - ./SwiftyMock/Templates
+output:
+  path: ./Example/RoboKittenTests/Mocks/Generated
+args:
+  testable: SwiftyMock # here you specify your application module name, that you're importing for testing
+```
+Second, annotate protocols that you want to generate mocks for, with `// sourcery: Mock` comment:
+```swift
+// sourcery: Mock
+protocol RoboKitten {
+    // ...
+}
+```
+Third, run sourcery command `sourcery --config .sourcery.yml --watch` if you want to run service that will regenerate mocks every time your source files or templates change.   
+Or `sourcery --config .sourcery.yml` if you want to generate mocks once.
