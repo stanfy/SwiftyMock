@@ -27,6 +27,7 @@ Pod::Spec.new do |s|
   end
 
   s.subspec 'Templates' do |ts|
+    ts.dependency 'SwiftyMock/Core'
     ts.resources = 'SwiftyMock/Templates/**/*'
   end
 end

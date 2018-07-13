@@ -10,5 +10,10 @@ protocol RoboKitten {
     @discardableResult func batteryStatus() -> Int
     func jump(x: Int, y: Int)
     @discardableResult func canJumpAt(x: Int, y: Int) -> Bool
-    func rest(_ completed: @escaping (Bool) -> () )
+    func rest(_ completed: @escaping (Bool) -> ())
+}
+
+// sourcery: Mock
+protocol LazyRoboKitten: RoboKitten {
+	var needsRest: Bool { get set }
 }

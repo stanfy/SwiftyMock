@@ -5,4 +5,4 @@ templates:
 output:
   path: ./Example/RoboKittenTests/Mocks/Generated
 args:
-  testable: SwiftyMock
+  testable: SwiftyMock_Example
