@@ -1,0 +1,8 @@
+sources: 
+  - ./Example/SwiftyMock/RoboKitten
+templates: 
+  - ./SwiftyMock/Templates
+output:
+  path: ./Example/RoboKittenTests/Mocks/Generated
+args:
+  testable: SwiftyMock_Example
