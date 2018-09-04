@@ -13,11 +13,11 @@ import ReactiveSwift
 import Result
 @testable import SwiftyMock
 
-protocol ReactiveCalculator {
+fileprivate protocol ReactiveCalculator {
     func sum(left: Int, right: Int) -> SignalProducer<Int, TestError>
 }
 
-class TestReactiveCalculator: ReactiveCalculator {
+fileprivate class TestReactiveCalculator: ReactiveCalculator {
     init() {}
 
     let sum = ReactiveCall<(left: Int, right: Int), Int, TestError>()
@@ -26,7 +26,7 @@ class TestReactiveCalculator: ReactiveCalculator {
     }
 }
 
-struct TestError: Error, Equatable {
+fileprivate struct TestError: Error, Equatable {
     let id: Int
     init() { id = 0 }
     init(id: Int) { self.id = id }
@@ -57,7 +57,7 @@ class SwiftyMockReactiveCallsSpec: QuickSpec {
                 }
 
                 context("when calling method before stubbing") {
-                    fit("should return empty signal without any value") {
+                    it("should return empty signal without any value") {
                         expect { sut.sum(left: 1,right: 2) }.to(complete())
                     }
                 }
@@ -224,8 +224,8 @@ class SwiftyMockReactiveCallsSpec: QuickSpec {
                 context("when calling filtered stubbed with block method") {
                     beforeEach {
                         sut.sum.returns(.success(17))
-                        sut.sum.on { $0.left  == 12 }.performs { .success($0.left - $0.right) }
-                        sut.sum.on { $0.right == 42 }.performs { _ in .failure(TestError()) }
+                        sut.sum.on { $0.left == 12 }.performs { .success($0.left - $0.right) }
+                        sut.sum.on { $0.left == 42 }.performs { _ in .failure(TestError()) }
                     }
                     context("when parameters matching filter") {
                         it("should return calculated with stub value") {

@@ -11,11 +11,11 @@ import Quick
 import Nimble
 @testable import SwiftyMock
 
-protocol Calculator {
+fileprivate protocol Calculator {
     func sum(left: Int, right: Int) -> Int
 }
 
-class TestCalculator: Calculator {
+fileprivate class TestCalculator: Calculator {
     let sum = FunctionCall<(left: Int, right: Int), Int>()
     @discardableResult func sum(left: Int, right: Int) -> Int {
         return stubCall(sum, argument: (left: left, right: right))
