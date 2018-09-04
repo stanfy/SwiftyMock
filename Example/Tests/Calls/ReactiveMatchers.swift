@@ -137,21 +137,12 @@ func sendEmptyValueAndComplete<T: SignalProducerConvertible>() -> Predicate<T> w
 // MARK: - Complete
 
 func complete<T: SignalProducerConvertible, V, E>() -> Predicate<T> where T.Value == V, T.Error == E {
-    return Predicate { (actualExpression: Expression<T>) throws -> PredicateResult in
-        var actualEvent: Signal<V, E>.Event?
-        var completed: Bool = false
-        let actualProducer = try actualExpression.evaluate()
-        actualProducer?.producer.start { event in
-            actualEvent = event
-            if case .completed = event {
-                completed = true
-            }
-        }
-        return PredicateResult(
-            bool: completed,
-            message: .expectedCustomValueTo("complete", message(forEvent: actualEvent))
+    return sendEvent(where: { $0.isCompleted }, expectation: { actualEvent in
+        .expectedCustomValueTo(
+            "complete",
+            message(forEvent: actualEvent)
         )
-    }
+    })
 }
 
 // MARK: - Fail
@@ -224,38 +215,146 @@ func failWithNoError<T: SignalProducerConvertible>() -> Predicate<T> where T.Err
 // MARK: - Interrupt
 
 func interrupt<T: SignalProducerConvertible, V, E>() -> Predicate<T> where T.Value == V, T.Error == E {
+    return sendEvent(where: { $0.isInterrupted }, expectation: { actualEvent in
+        .expectedCustomValueTo(
+            "interrupt",
+            message(forEvent: actualEvent)
+        )
+    })
+}
+
+// MARK: - Event
+
+private func sendEvent<T: SignalProducerConvertible, V, E>(
+    where predicate: @escaping (Signal<V, E>.Event) -> Bool,
+    expectation: @escaping (Signal<V, E>.Event?) -> ExpectationMessage
+) -> Predicate<T> where T.Value == V, T.Error == E {
     return Predicate { (actualExpression: Expression<T>) throws -> PredicateResult in
         var actualEvent: Signal<V, E>.Event?
-        var interrupted: Bool = false
+        var satisfies: Bool = false
         let actualProducer = try actualExpression.evaluate()
         actualProducer?.producer.start { event in
             actualEvent = event
-            if case .interrupted = event {
-                interrupted = true
-            }
+            satisfies = predicate(event)
         }
         return PredicateResult(
-            bool: interrupted,
-            message: .expectedCustomValueTo("interrupt", message(forEvent: actualEvent))
+            bool: satisfies,
+            message: expectation(actualEvent)
         )
     }
 }
 
+func sendEvent<T: SignalProducerConvertible, V, E>(where predicate: @escaping (Signal<V, E>.Event) -> Bool) -> Predicate<T> where T.Value == V, T.Error == E {
+    return sendEvent(where: predicate, expectation: { actualEvent in
+        .expectedCustomValueTo(
+            "send event to satisfy predicate",
+            message(forEvent: actualEvent)
+        )
+    })
+}
+
+func sendEvent<T: SignalProducerConvertible, V: Equatable, E: Equatable>(_ expectedEvent: Signal<V, E>.Event) -> Predicate<T> where T.Value == V, T.Error == E {
+    return sendEvent(where: { $0 == expectedEvent }, expectation: { actualEvent in
+        .expectedCustomValueTo(
+            "send " + message(forEvent: expectedEvent),
+            message(forEvent: actualEvent)
+        )
+    })
+}
+
+// MARK: - Events
+
+private func sendEvents<T: SignalProducerConvertible, V, E>(
+    where predicate: @escaping ([Signal<V, E>.Event]) -> Bool,
+    expectation: @escaping ([Signal<V, E>.Event]) -> ExpectationMessage
+) -> Predicate<T> where T.Value == V, T.Error == E {
+    return Predicate { (actualExpression: Expression<T>) throws -> PredicateResult in
+        var actualEvents: [Signal<V, E>.Event] = []
+        var satisfies: Bool = false
+        let actualProducer = try actualExpression.evaluate()
+        actualProducer?.producer
+            .on(event: { event in
+                actualEvents.append(event)
+            })
+            .on(terminated: {
+                satisfies = predicate(actualEvents)
+            })
+            .start()
+        return PredicateResult(
+            bool: satisfies,
+            message: expectation(actualEvents)
+        )
+    }
+}
+
+func sendEvents<T: SignalProducerConvertible, V, E>(where predicate: @escaping ([Signal<V, E>.Event]) -> Bool) -> Predicate<T> where T.Value == V, T.Error == E {
+    return sendEvents(where: predicate, expectation: { actualEvents in
+        .expectedCustomValueTo(
+            "send events to satisfy predicate",
+            message(forEvents: actualEvents)
+        )
+    })
+}
+
+func sendEvents<T: SignalProducerConvertible, V: Equatable, E: Equatable>(_ expectedEvents: [Signal<V, E>.Event]) -> Predicate<T> where T.Value == V, T.Error == E {
+    return sendEvents(where: { $0 == expectedEvents }, expectation: { actualEvents in
+        .expectedCustomValueTo(
+            "send " + message(forEvents: expectedEvents),
+            message(forEvents: actualEvents)
+        )
+    })
+}
+
+func sendEvents<T: SignalProducerConvertible, V, E>(whereAll predicate: @escaping (Signal<V, E>.Event) -> Bool) -> Predicate<T> where T.Value == V, T.Error == E {
+    return sendEvents(where: { events in !events.contains(where: { !predicate($0) }) }, expectation: { actualEvents in
+        .expectedCustomValueTo(
+            "send all events to satisfy predicate",
+            message(forEvents: actualEvents)
+        )
+    })
+}
+
+func sendEvents<T: SignalProducerConvertible, V, E>(whereAny predicate: @escaping (Signal<V, E>.Event) -> Bool) -> Predicate<T> where T.Value == V, T.Error == E {
+    return sendEvents(where: { events in events.contains(where: predicate) }, expectation: { actualEvents in
+        .expectedCustomValueTo(
+            "send at least one event to satisfy predicate",
+            message(forEvents: actualEvents)
+        )
+    })
+}
+
 // MARK: - Helpers
 
-private func errorMatchesExpectedError<T: Error>(_ actualError: Error, expectedError: T) -> Bool {
+fileprivate extension Signal.Event {
+    var isInterrupted: Bool {
+        if case .interrupted = event { return true }
+        return false
+    }
+}
+
+extension Signal.Event: Equatable where Signal.Value: Equatable, Signal.Error: Equatable {}
+
+fileprivate func errorMatchesExpectedError<T: Error>(_ actualError: Error, expectedError: T) -> Bool {
     return actualError._domain == expectedError._domain
         && actualError._code   == expectedError._code
 }
 
-private func message<V, E>(forEvent event: Signal<V, E>.Event?) -> String {
+fileprivate func message<V, E>(forEvents events: [Signal<V, E>.Event]?) -> String {
+    if let events = events {
+        let stringifiedEvents = events.map(stringify).joined(separator: ", ")
+        return "<[\(stringifiedEvents)]> events"
+    }
+    return "no events"
+}
+
+fileprivate func message<V, E>(forEvent event: Signal<V, E>.Event?) -> String {
     if let event = event {
         return "<\(stringify(event))> event"
     }
     return "no event"
 }
 
-private func message<V, E>(forEvent event: Signal<V, E>.Event?, value: V?) -> String {
+fileprivate func message<V, E>(forEvent event: Signal<V, E>.Event?, value: V?) -> String {
     if let event = event {
         if case .value = event {
             return "<\(stringify(value))> value"
@@ -265,7 +364,7 @@ private func message<V, E>(forEvent event: Signal<V, E>.Event?, value: V?) -> St
     return "no event"
 }
 
-private func message<V, E>(forEvent event: Signal<V, E>.Event?, error: E?) -> String {
+fileprivate func message<V, E>(forEvent event: Signal<V, E>.Event?, error: E?) -> String {
     if let event = event {
         if case .failed = event {
             return "<\(stringify(error))> error"
