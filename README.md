@@ -207,3 +207,13 @@ protocol RoboKitten {
 ```
 Third, run sourcery command `sourcery --config .sourcery.yml --watch` if you want to run service that will regenerate mocks every time your source files or templates change.   
 Or `sourcery --config .sourcery.yml` if you want to generate mocks once.
+
+### Some Extras
+We're able to generate templates for stubbbing and mocking `SignalProducer` from ReactiveSwift.    
+But, to make it work correctly, you should add path to its sources in sourcery config.    
+
+There's one more step to have generated file compile.    
+Currently, we can't get all modules' names, whose types are participating in generated file.    
+There's [issue](https://github.com/krzysztofzablocki/Sourcery/issues/670) in Sourcery repo, that might elaborate on this task.    
+So, to make file compile, we need to manually (for now) import modules. Since file is always regenerated, we can do it through sourcery config file.    
+List all imports inside `imports` argument, as it's done here in the example `.sourcery.yml`.
