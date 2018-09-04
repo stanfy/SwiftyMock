@@ -181,8 +181,26 @@ kittenMock.batteryStatusCall.returns(Result(error: ImagineThisIsError))
 
 Everything else stays the same :)
 
+### Advanced
+Usually Result is enough to stub signal with either value or error. But since Signal represents sequence of values over time, you might want to stub this behaviour as well.    
+For this purpose, there's `ReactiveEventsCall` which is actually a `FunctionCall` with `Array<Signal.Event>` value type.    
+This way you can stub function return value with sequence of events. But don't forget about [Event contract](https://github.com/ReactiveCocoa/ReactiveSwift/blob/master/Documentation/APIContracts.md#the-event-contract) - thus no value will be sent after any terminating event.
+
+```swift
+// when using Result:
+kittenMock.batteryStatusCall.returns(.success(42))
+
+// when using Signal.Event - you can pass either one event, or many as shown below:
+// also `.completed` event will be called automatically if no terminating event passed in the sequence, thus `[.value(42), .completed] == .value(42)`
+kittenMock.batteryStatusCall.returns(.value(42))
+// or
+kittenMock.batteryStatusCall.returns([.value(42), .value(12), .value(0), .completed])
+// but this one won't send `.value(0)`, since it has already completed before it
+kittenMock.batteryStatusCall.returns([.value(42), .completed, .value(0)])
+```
+
 # Matchers
-SwiftyMock doesn't have its own matchers, so you can use whatever matchers suits better for you :)
+SwiftyMock doesn't have its own matchers, so you can use whatever matchers suit you better :)
 
 # Templates
 You can generate mocks automatically with [Sourcery](https://github.com/krzysztofzablocki/Sourcery).    
