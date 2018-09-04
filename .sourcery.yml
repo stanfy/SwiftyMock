@@ -1,8 +1,14 @@
 sources: 
   - ./Example/SwiftyMock/RoboKitten
+  # this one is needed for templates to recognize ReactiveSwift types if we want to stub them
+  - ./Example/Pods/ReactiveSwift/Sources
 templates: 
   - ./SwiftyMock/Templates
 output:
   path: ./Example/RoboKittenTests/Mocks/Generated
 args:
   testable: SwiftyMock_Example
+  # hard-coding these for now until it's clear how to dynamicall get modules for used types, more here: https://github.com/krzysztofzablocki/Sourcery/issues/670
+  imports:
+    - ReactiveSwift
+    - Result
