@@ -4,6 +4,7 @@
 //
 
 import Foundation
+import ReactiveSwift
 
 // sourcery: Mock
 protocol RoboKitten {
@@ -15,5 +16,9 @@ protocol RoboKitten {
 
 // sourcery: Mock
 protocol LazyRoboKitten: RoboKitten {
+    // sourcery: skipMock
 	var needsRest: Bool { get set }
+    var wantsToEat: Bool { get set }
+
+    func sleep(hours: Int) -> SignalProducer<Bool, NSError>
 }

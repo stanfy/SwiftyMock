@@ -3,19 +3,32 @@
 
 import Foundation
 import SwiftyMock
+import ReactiveSwift
+import Result
 @testable import SwiftyMock_Example
 
 class FakeLazyRoboKitten: LazyRoboKitten {
-    let needsRestGetCall = FunctionVoidCall<Bool>()
-    let needsRestSetCall = FunctionCall<Bool, Void>()
-    var needsRest: Bool {
-        get { return stubCall(needsRestGetCall) }
-        set { stubCall(needsRestSetCall, argument: newValue) }
+    var needsRest: Bool
+
+    let wantsToEatGetCall = FunctionCall<Void, Bool>()
+    let wantsToEatSetCall = FunctionCall<Bool, Void>()
+    var wantsToEat: Bool {
+        get { return stubCall(wantsToEatGetCall, argument: ()) }
+        set { stubCall(wantsToEatSetCall, argument: newValue) }
     }
 
-    let batteryStatusCall = FunctionVoidCall<Int>()
+    init(needsRest: Bool) {
+        self.needsRest = needsRest
+    }
+
+    let sleepCall = ReactiveCall<Int, Bool, NSError>()
+    func sleep(hours: Int) -> SignalProducer<Bool, NSError> {
+        return stubCall(sleepCall, argument: hours)
+    }
+
+    let batteryStatusCall = FunctionCall<(), Int>()
     func batteryStatus() -> Int {
-        return stubCall(batteryStatusCall)
+        return stubCall(batteryStatusCall, argument: ())
     }
 
     let jumpCall = FunctionCall<(x: Int, y: Int), Void>()
@@ -36,9 +49,10 @@ class FakeLazyRoboKitten: LazyRoboKitten {
 
 class FakeRoboKitten: RoboKitten {
 
-    let batteryStatusCall = FunctionVoidCall<Int>()
+
+    let batteryStatusCall = FunctionCall<(), Int>()
     func batteryStatus() -> Int {
-        return stubCall(batteryStatusCall)
+        return stubCall(batteryStatusCall, argument: ())
     }
 
     let jumpCall = FunctionCall<(x: Int, y: Int), Void>()
