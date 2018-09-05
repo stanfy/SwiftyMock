@@ -88,6 +88,109 @@ class SwiftyMockReactiveEventsCallsSpec: QuickSpec {
                         }
                     }
 
+                    context("with multiple values stub") {
+                        beforeEach {
+                            sut.sum.returns([.value(1), .value(1), .value(2), .value(6), .value(24), .value(120), .value(720), .completed])
+                        }
+
+                        it("should return stubbed values and complete") {
+                            let result = sut.sum(left: 1, right: 2)
+                            expect(result).to(sendEvents([.value(1), .value(1), .value(2), .value(6), .value(24), .value(120), .value(720), .completed]))
+                        }
+                    }
+
+                    context("with multiple values without terminating event stub") {
+                        beforeEach {
+                            sut.sum.returns([.value(1), .value(1), .value(2)])
+                        }
+
+                        it("should return stubbed values and complete") {
+                            let result = sut.sum(left: 1, right: 2)
+                            expect(result).to(sendEvents([.value(1), .value(1), .value(2), .completed]))
+                        }
+                    }
+
+                    context("with terminating event in the middle of values stub") {
+                        context("in case of completed event") {
+                            beforeEach {
+                                sut.sum.returns([.value(1), .value(1), .completed, .value(2)])
+                            }
+
+                            it("should return stubbed values only before completed event") {
+                                let result = sut.sum(left: 1, right: 2)
+                                expect(result).to(sendEvents([.value(1), .value(1), .completed]))
+                            }
+                        }
+
+                        context("in case of interrupted event") {
+                            beforeEach {
+                                sut.sum.returns([.value(1), .value(1), .interrupted, .value(2)])
+                            }
+
+                            it("should return stubbed values only before completed event") {
+                                let result = sut.sum(left: 1, right: 2)
+                                expect(result).to(sendEvents([.value(1), .value(1), .interrupted]))
+                            }
+                        }
+
+                        context("in case of failed event") {
+                            beforeEach {
+                                sut.sum.returns([.value(1), .value(1), .failed(TestError()), .value(2)])
+                            }
+
+                            it("should return stubbed values only before completed event") {
+                                let result = sut.sum(left: 1, right: 2)
+                                expect(result).to(sendEvents([.value(1), .value(1), .failed(TestError())]))
+                            }
+                        }
+                    }
+
+                    context("with terminating event in the end of values stub") {
+                        context("in case of completed event") {
+                            beforeEach {
+                                sut.sum.returns([.value(1), .value(1), .value(2), .completed])
+                            }
+
+                            it("should return whole sequence of events") {
+                                let result = sut.sum(left: 1, right: 2)
+                                expect(result).to(sendEvents([.value(1), .value(1), .value(2), .completed]))
+                            }
+                        }
+
+                        context("in case of interrupted event") {
+                            beforeEach {
+                                sut.sum.returns([.value(1), .value(1), .value(2), .interrupted])
+                            }
+
+                            it("should return whole sequence of events") {
+                                let result = sut.sum(left: 1, right: 2)
+                                expect(result).to(sendEvents([.value(1), .value(1), .value(2), .interrupted]))
+                            }
+                        }
+
+                        context("in case of failed event") {
+                            beforeEach {
+                                sut.sum.returns([.value(1), .value(1), .value(2), .failed(TestError())])
+                            }
+
+                            it("should return whole sequence of events") {
+                                let result = sut.sum(left: 1, right: 2)
+                                expect(result).to(sendEvents([.value(1), .value(1), .value(2), .failed(TestError())]))
+                            }
+                        }
+
+                        context("in case of multiple terminating events") {
+                            beforeEach {
+                                sut.sum.returns([.value(1), .value(1), .value(2), .interrupted, .failed(TestError()), .completed])
+                            }
+
+                            it("should return only events up until first terminating event, including it") {
+                                let result = sut.sum(left: 1, right: 2)
+                                expect(result).to(sendEvents([.value(1), .value(1), .value(2), .interrupted]))
+                            }
+                        }
+                    }
+
                     context("with failure value stub") {
                         beforeEach {
                             sut.sum.returns(.failed(TestError()))
