@@ -18,6 +18,7 @@
 		D21AF4631FC62DF600C0DC5F /* SwiftyMockReactiveCallsSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = D21AF4611FC62CFF00C0DC5F /* SwiftyMockReactiveCallsSpec.swift */; };
 		D21AF4661FC638F200C0DC5F /* ReactiveMatchers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D21AF4641FC6324400C0DC5F /* ReactiveMatchers.swift */; };
 		D2AEE57F20F9559000FF7DC8 /* Mock.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2AEE57E20F9559000FF7DC8 /* Mock.generated.swift */; };
+		D2E357F5213DE087009417DA /* SwiftyMockReactiveEventsCallsSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2E357F4213DE087009417DA /* SwiftyMockReactiveEventsCallsSpec.swift */; };
 		E434BE281D4AAE86000E7125 /* SwiftyMockCallsSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E434BE271D4AAE86000E7125 /* SwiftyMockCallsSpec.swift */; };
 		E481D6901D4DDE61000E73AE /* RoboKittenControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E481D68F1D4DDE61000E73AE /* RoboKittenControllerSpec.swift */; };
 		EEDBE358155D115C15126670 /* RoboKitten.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEDBEBCC4DF10B0C24246892 /* RoboKitten.swift */; };
@@ -63,6 +64,7 @@
 		D21AF4611FC62CFF00C0DC5F /* SwiftyMockReactiveCallsSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftyMockReactiveCallsSpec.swift; sourceTree = "<group>"; };
 		D21AF4641FC6324400C0DC5F /* ReactiveMatchers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactiveMatchers.swift; sourceTree = "<group>"; };
 		D2AEE57E20F9559000FF7DC8 /* Mock.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mock.generated.swift; sourceTree = "<group>"; };
+		D2E357F4213DE087009417DA /* SwiftyMockReactiveEventsCallsSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftyMockReactiveEventsCallsSpec.swift; sourceTree = "<group>"; };
 		E434BE271D4AAE86000E7125 /* SwiftyMockCallsSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyMockCallsSpec.swift; sourceTree = "<group>"; };
 		E481D6831D4DDDBE000E73AE /* RoboKittenTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RoboKittenTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E481D6871D4DDDBE000E73AE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -213,6 +215,7 @@
 			children = (
 				E434BE271D4AAE86000E7125 /* SwiftyMockCallsSpec.swift */,
 				D21AF4611FC62CFF00C0DC5F /* SwiftyMockReactiveCallsSpec.swift */,
+				D2E357F4213DE087009417DA /* SwiftyMockReactiveEventsCallsSpec.swift */,
 				D21AF4641FC6324400C0DC5F /* ReactiveMatchers.swift */,
 			);
 			path = Calls;
@@ -542,6 +545,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D2E357F5213DE087009417DA /* SwiftyMockReactiveEventsCallsSpec.swift in Sources */,
 				E434BE281D4AAE86000E7125 /* SwiftyMockCallsSpec.swift in Sources */,
 				D21AF4661FC638F200C0DC5F /* ReactiveMatchers.swift in Sources */,
 				D21AF4631FC62DF600C0DC5F /* SwiftyMockReactiveCallsSpec.swift in Sources */,

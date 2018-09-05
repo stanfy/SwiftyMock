@@ -1,9 +1,9 @@
 //
-//  SwiftyMockReactiveCallsSpec.swift
-//  SwiftyMock_Example
+//  SwiftyMockReactiveEventsCallsSpec.swift
+//  SwiftyMock_Tests
 //
-//  Created by Alexander Voronov on 11/23/17.
-//  Copyright © 2017 CocoaPods. All rights reserved.
+//  Created by Alexander Voronov on 9/4/18.
+//  Copyright © 2018 CocoaPods. All rights reserved.
 //
 
 import Foundation
@@ -20,7 +20,7 @@ fileprivate protocol ReactiveCalculator {
 fileprivate class TestReactiveCalculator: ReactiveCalculator {
     init() {}
 
-    let sum = ReactiveCall<(left: Int, right: Int), Int, TestError>()
+    let sum = ReactiveEventsCall<(left: Int, right: Int), Int, TestError>()
     @discardableResult func sum(left: Int, right: Int) -> SignalProducer<Int, TestError> {
         return stubCall(sum, argument: (left: left, right: right))
     }
@@ -32,9 +32,9 @@ fileprivate struct TestError: Error, Equatable {
     init(id: Int) { self.id = id }
 }
 
-class SwiftyMockReactiveCallsSpec: QuickSpec {
+class SwiftyMockReactiveEventsCallsSpec: QuickSpec {
     override func spec() {
-        describe("SwiftyMockReactiveCalls") {
+        describe("SwiftyMockReactiveEventsCalls") {
             describe("when correctly setup") {
                 var sut: TestReactiveCalculator!
                 beforeEach {
@@ -65,13 +65,12 @@ class SwiftyMockReactiveCallsSpec: QuickSpec {
                 context("when calling stubbed method") {
                     context("with value stub") {
                         beforeEach {
-                            sut.sum.returns(.success(12))
+                            sut.sum.returns(.value(12))
                         }
 
                         it("should return stubbed value and complete") {
                             let result = sut.sum(left: 1, right: 2)
-                            expect(result).to(sendValue(12))
-                            expect(result).to(complete())
+                            expect(result).to(sendEvents([.value(12), .completed]))
                         }
 
                         it("should have calls count equal number of calls") {
@@ -89,9 +88,112 @@ class SwiftyMockReactiveCallsSpec: QuickSpec {
                         }
                     }
 
+                    context("with multiple values stub") {
+                        beforeEach {
+                            sut.sum.returns([.value(1), .value(1), .value(2), .value(6), .value(24), .value(120), .value(720), .completed])
+                        }
+
+                        it("should return stubbed values and complete") {
+                            let result = sut.sum(left: 1, right: 2)
+                            expect(result).to(sendEvents([.value(1), .value(1), .value(2), .value(6), .value(24), .value(120), .value(720), .completed]))
+                        }
+                    }
+
+                    context("with multiple values without terminating event stub") {
+                        beforeEach {
+                            sut.sum.returns([.value(1), .value(1), .value(2)])
+                        }
+
+                        it("should return stubbed values and complete") {
+                            let result = sut.sum(left: 1, right: 2)
+                            expect(result).to(sendEvents([.value(1), .value(1), .value(2), .completed]))
+                        }
+                    }
+
+                    context("with terminating event in the middle of values stub") {
+                        context("in case of completed event") {
+                            beforeEach {
+                                sut.sum.returns([.value(1), .value(1), .completed, .value(2)])
+                            }
+
+                            it("should return stubbed values only before completed event") {
+                                let result = sut.sum(left: 1, right: 2)
+                                expect(result).to(sendEvents([.value(1), .value(1), .completed]))
+                            }
+                        }
+
+                        context("in case of interrupted event") {
+                            beforeEach {
+                                sut.sum.returns([.value(1), .value(1), .interrupted, .value(2)])
+                            }
+
+                            it("should return stubbed values only before completed event") {
+                                let result = sut.sum(left: 1, right: 2)
+                                expect(result).to(sendEvents([.value(1), .value(1), .interrupted]))
+                            }
+                        }
+
+                        context("in case of failed event") {
+                            beforeEach {
+                                sut.sum.returns([.value(1), .value(1), .failed(TestError()), .value(2)])
+                            }
+
+                            it("should return stubbed values only before completed event") {
+                                let result = sut.sum(left: 1, right: 2)
+                                expect(result).to(sendEvents([.value(1), .value(1), .failed(TestError())]))
+                            }
+                        }
+                    }
+
+                    context("with terminating event in the end of values stub") {
+                        context("in case of completed event") {
+                            beforeEach {
+                                sut.sum.returns([.value(1), .value(1), .value(2), .completed])
+                            }
+
+                            it("should return whole sequence of events") {
+                                let result = sut.sum(left: 1, right: 2)
+                                expect(result).to(sendEvents([.value(1), .value(1), .value(2), .completed]))
+                            }
+                        }
+
+                        context("in case of interrupted event") {
+                            beforeEach {
+                                sut.sum.returns([.value(1), .value(1), .value(2), .interrupted])
+                            }
+
+                            it("should return whole sequence of events") {
+                                let result = sut.sum(left: 1, right: 2)
+                                expect(result).to(sendEvents([.value(1), .value(1), .value(2), .interrupted]))
+                            }
+                        }
+
+                        context("in case of failed event") {
+                            beforeEach {
+                                sut.sum.returns([.value(1), .value(1), .value(2), .failed(TestError())])
+                            }
+
+                            it("should return whole sequence of events") {
+                                let result = sut.sum(left: 1, right: 2)
+                                expect(result).to(sendEvents([.value(1), .value(1), .value(2), .failed(TestError())]))
+                            }
+                        }
+
+                        context("in case of multiple terminating events") {
+                            beforeEach {
+                                sut.sum.returns([.value(1), .value(1), .value(2), .interrupted, .failed(TestError()), .completed])
+                            }
+
+                            it("should return only events up until first terminating event, including it") {
+                                let result = sut.sum(left: 1, right: 2)
+                                expect(result).to(sendEvents([.value(1), .value(1), .value(2), .interrupted]))
+                            }
+                        }
+                    }
+
                     context("with failure value stub") {
                         beforeEach {
-                            sut.sum.returns(.failure(TestError()))
+                            sut.sum.returns(.failed(TestError()))
                         }
 
                         it("should return stubbed error") {
@@ -101,7 +203,7 @@ class SwiftyMockReactiveCallsSpec: QuickSpec {
 
                     context("with logic stub") {
                         beforeEach {
-                            sut.sum.performs { .success($0.left - $0.right) }
+                            sut.sum.performs { .value($0.left - $0.right) }
                         }
 
                         it("should calculate method based on the stubbed block") {
@@ -126,7 +228,7 @@ class SwiftyMockReactiveCallsSpec: QuickSpec {
 
                     context("with failure logic stub") {
                         beforeEach {
-                            sut.sum.performs { _ in .failure(TestError()) }
+                            sut.sum.performs { _ in [.failed(TestError())] }
                         }
 
                         it("should return stubbed error") {
@@ -136,8 +238,8 @@ class SwiftyMockReactiveCallsSpec: QuickSpec {
 
                     context("with value and logic stub") {
                         beforeEach {
-                            sut.sum.returns(.success(12))
-                            sut.sum.performs { .success($0.left + $0.right) }
+                            sut.sum.returns(.value(12))
+                            sut.sum.performs { [.value($0.left + $0.right)] }
                         }
 
                         it("should use logic stub instead of value") {
@@ -147,8 +249,8 @@ class SwiftyMockReactiveCallsSpec: QuickSpec {
 
                     context("with value and failure logic stub") {
                         beforeEach {
-                            sut.sum.returns(.success(12))
-                            sut.sum.performs { _ in .failure(TestError()) }
+                            sut.sum.returns(.value(12))
+                            sut.sum.performs { _ in [.failed(TestError())] }
                         }
 
                         it("should use failure logic stub instead of value") {
@@ -158,8 +260,8 @@ class SwiftyMockReactiveCallsSpec: QuickSpec {
 
                     context("with failure value and logic stub") {
                         beforeEach {
-                            sut.sum.returns(.failure(TestError()))
-                            sut.sum.performs { .success($0.left + $0.right) }
+                            sut.sum.returns([.failed(TestError())])
+                            sut.sum.performs { .value($0.left + $0.right) }
                         }
 
                         it("should use logic stub instead of failure value") {
@@ -169,8 +271,8 @@ class SwiftyMockReactiveCallsSpec: QuickSpec {
 
                     context("with failure value and failure logic stub") {
                         beforeEach {
-                            sut.sum.returns(.failure(TestError(id: 0)))
-                            sut.sum.performs { _ in .failure(TestError(id: 1)) }
+                            sut.sum.returns([.failed(TestError(id: 0))])
+                            sut.sum.performs { _ in [.failed(TestError(id: 1))] }
                         }
 
                         it("should use failure logic stub instead of failure value") {
@@ -181,10 +283,10 @@ class SwiftyMockReactiveCallsSpec: QuickSpec {
 
                 context("when calling filtered value stubbed method") {
                     beforeEach {
-                        sut.sum.returns(.success(10))
-                        sut.sum.on { $0.left  == 12 }.returns(.success(0))
-                        sut.sum.on { $0.right == 15 }.returns(.success(7))
-                        sut.sum.on { $0.right == 42 }.returns(.failure(TestError()))
+                        sut.sum.returns([.value(10)])
+                        sut.sum.on { $0.left  == 12 }.returns(.value(0))
+                        sut.sum.on { $0.right == 15 }.returns([.value(7)])
+                        sut.sum.on { $0.right == 42 }.returns([.failed(TestError())])
                     }
                     context("when parameters matching filter") {
                         it("should return filter srubbed value") {
@@ -202,10 +304,10 @@ class SwiftyMockReactiveCallsSpec: QuickSpec {
 
                 context("when calling filtered block stubbed method") {
                     beforeEach {
-                        sut.sum.performs { .success($0.left - $0.right) }
-                        sut.sum.on { $0.left  == 0  }.performs { _ in .success(0) }
-                        sut.sum.on { $0.right == 0  }.performs { _ in .success(12) }
-                        sut.sum.on { $0.right == -1 }.performs { _ in .failure(TestError()) }
+                        sut.sum.performs { [.value($0.left - $0.right)] }
+                        sut.sum.on { $0.left  == 0  }.performs { _ in [.value(0)] }
+                        sut.sum.on { $0.right == 0  }.performs { _ in .value(12) }
+                        sut.sum.on { $0.right == -1 }.performs { _ in [.failed(TestError())] }
                     }
                     context("when parameters matching filter") {
                         it("should return call filter-based block") {
@@ -223,14 +325,17 @@ class SwiftyMockReactiveCallsSpec: QuickSpec {
 
                 context("when calling filtered stubbed with block method") {
                     beforeEach {
-                        sut.sum.returns(.success(17))
-                        sut.sum.on { $0.left == 12 }.performs { .success($0.left - $0.right) }
-                        sut.sum.on { $0.left == 42 }.performs { _ in .failure(TestError()) }
+                        sut.sum.returns([.value(17)])
+                        sut.sum.on { $0.left == 12 }.performs { [.value($0.left - $0.right)] }
+                        sut.sum.on { $0.right == 13 }.performs { _ in [.value(42), .interrupted] }
+                        sut.sum.on { $0.left == 42 }.performs { _ in .failed(TestError()) }
                     }
                     context("when parameters matching filter") {
                         it("should return calculated with stub value") {
                             expect(sut.sum(left: 12, right:  2)).to(sendValue(10))
                             expect(sut.sum(left: 12, right: 12)).to(sendValue(0))
+                            expect(sut.sum(left: 0, right: 13)).to(interrupt())
+                            expect(sut.sum(left: 1, right: 13)).to(sendEvents([.value(42), .interrupted]))
                             expect(sut.sum(left: 42, right: 12)).to(fail(with: TestError()))
                         }
                     }

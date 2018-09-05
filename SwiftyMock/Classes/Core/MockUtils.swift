@@ -47,6 +47,18 @@ open class FunctionCall<Arg, Value> {
     }
 }
 
+public extension FunctionCall {
+    public func returns<E>(_ element: E) where Value == Array<E> {
+        returns([element])
+    }
+
+    public func performs<E>(_ block: @escaping (Arg) -> E) where Value == Array<E> {
+        performs({ arg in [block(arg)] })
+    }
+}
+
+// MARK: - Stub Call
+
 public func stubCall<Arg, Value>(_ call: FunctionCall<Arg, Value>, argument: Arg, defaultValue: Value? = nil)  -> Value {
     call.capture(argument)
     
@@ -89,14 +101,28 @@ open class ReturnContext<Arg, Value> {
         self.stub = stub
     }
 
-    @discardableResult open func returns(_ value: Value) -> FunctionCall<Arg, Value> {
+    @discardableResult
+    open func returns(_ value: Value) -> FunctionCall<Arg, Value> {
         stub.stubbedValue = value
         return call
     }
 
-    @discardableResult open func performs(_ block: @escaping ((Arg) -> Value)) -> FunctionCall<Arg, Value> {
+    @discardableResult
+    open func performs(_ block: @escaping ((Arg) -> Value)) -> FunctionCall<Arg, Value> {
         stub.stubbedBlock = block
         return call
+    }
+}
+
+public extension ReturnContext {
+    @discardableResult
+    public func returns<E>(_ element: E) -> FunctionCall<Arg, Value> where Value == Array<E> {
+        return returns([element])
+    }
+
+    @discardableResult
+    public func performs<E>(_ block: @escaping ((Arg) -> E)) -> FunctionCall<Arg, Value> where Value == Array<E> {
+        return performs({ arg in [block(arg)] })
     }
 }
 
