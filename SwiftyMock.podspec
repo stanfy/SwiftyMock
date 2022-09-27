@@ -20,12 +20,6 @@ Pod::Spec.new do |s|
     cs.source_files = 'SwiftyMock/Classes/Core/**/*'
   end
 
-  s.subspec 'ReactiveCocoa' do |rs|
-    rs.dependency 'SwiftyMock/Core'
-    rs.dependency 'ReactiveCocoa', '~> 7.1'
-    rs.source_files = 'SwiftyMock/Classes/ReactiveCocoa/**/*'
-  end
-
   s.subspec 'Templates' do |ts|
     ts.dependency 'SwiftyMock/Core'
     ts.resources = 'SwiftyMock/Templates/**/*'

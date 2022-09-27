@@ -139,48 +139,6 @@ it("should ask kitten if it's available to jump there with the same coords") {
 }
 ```
 
-## [ReactiveSwift](https://github.com/ReactiveCocoa/ReactiveSwift) stubs support
-API for methods that return `SignalProducer` or `Action` is pretty much the same as for usual methods stubs.
-
-Imagine RoboKitten protocol is a bit changed and returns SignalProducer instead of plain value, so we can keep and eye on battery status level.
-
-```swift
-protocol RoboKitten {
-    func batteryStatus() -> SignalProducer<Int, NoError>
-}
-```
-
-Now you create mock implementation of this protocol, but instead of `FunctionCall`, you're using `ReactiveCall`.
-The only difference is that we've added third type constraint to specify `Error`.
-
-```swift
-class RoboKittenMock: RoboKitten {
-    let batteryStatusCall = ReactiveCall<(), Int, NoError>()
-    func batteryStatus() -> SignalProducer<Int, NoError> {
-        return stubCall(batteryStatusCall, argument:())
-    }
-}
-```
-
-### Method stub
-Since `SignalProducer` is constrained by **Value** and **Error** types, we need to allow user to choose, which one to stub call with.
-Luckily there's handy [Result](https://github.com/antitypical/Result) type and its implementation comes along with [ReactiveSwift](https://github.com/ReactiveCocoa/ReactiveSwift).
-Thus in order to stub `ReactiveCall`, you use `Result` instead of plain value as you did with `FunctionCall`.
-
-```swift
-// like this
-kittenMock.batteryStatusCall.returns(.success(42))
-// or
-kittenMock.batteryStatusCall.returns(Result(value: 42))
-
-// or in case you want this stub to return failure
-kittenMock.batteryStatusCall.returns(.failure(ImagineThisIsError))
-// or
-kittenMock.batteryStatusCall.returns(Result(error: ImagineThisIsError))
-```
-
-Everything else stays the same :)
-
 # Matchers
 SwiftyMock doesn't have its own matchers, so you can use whatever matchers suits better for you :)
 
