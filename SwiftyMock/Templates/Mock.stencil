@@ -1,40 +1,55 @@
 import Foundation
 import SwiftyMock
+{# So far getting imports hardcoded from config, correct approach might be found here: https://github.com/krzysztofzablocki/Sourcery/issues/670 #}
+{% for import in argument.imports %}
+import {{ import }}
+{% endfor %}
+
 {% if argument.testable %}@testable import {{ argument.testable }}{% endif %}
 
-{% macro functionCallType method %}{% if method.parameters.count == 0 %}FunctionVoidCall{% else %}FunctionCall{% endif %}{% endmacro %}
-    
 {% macro functionCallArgumentsType method %}{% if method.parameters.count == 1 %}{{ method.parameters.first.typeName.unwrappedTypeName }}{% else %}({% for param in method.parameters %}{{ param.name }}: {{ param.typeName.unwrappedTypeName }}{% if not forloop.last %}, {% endif %}{% endfor %}){% endif %}{% endmacro %}
-    
-{% macro functionCallReturnType method %}{% if not method.returnTypeName.isVoid %}{{ method.returnTypeName }}{% else %}Void{% endif %}{% endmacro %}
-    
-{% macro stubCallArguments method %}{% if method.parameters.count > 0 %}, argument: {% if method.parameters.count == 1 %}{{ method.parameters.first.name }}{% else %}({% for param in method.parameters %}{{ param.name }}: {{ param.name }}{% if not forloop.last %}, {% endif %}{% endfor %}){% endif %}{% endif %}{% endmacro %}
-    
-{% macro mockVariableGetterCall variable %}let {{ variable.name }}GetCall = FunctionVoidCall<{{ variable.typeName }}>(){% endmacro %}
+
+{% macro functionCall method %}FunctionCall<{% call functionCallArgumentsType method %}, {% if not method.returnTypeName.isVoid %}{{ method.returnTypeName }}{% else %}Void{% endif %}>{% endmacro %}
+
+{% macro stubCallArguments method %}, argument: {% if method.parameters.count == 0 %}(){% elif method.parameters.count == 1 %}{{ method.parameters.first.name }}{% else %}({% for param in method.parameters %}{{ param.name }}: {{ param.name }}{% if not forloop.last %}, {% endif %}{% endfor %}){% endif %}{% endmacro %}
+
+{% macro mockVariableGetterCall variable %}let {{ variable.name }}GetCall = FunctionCall<Void, {{ variable.typeName }}>(){% endmacro %}
 {% macro mockVariableSetterCall variable %}let {{ variable.name }}SetCall = FunctionCall<{{ variable.typeName }}, Void>(){% endmacro %}
-    
+
 {% macro mockVariable variable %}
     {% call mockVariableGetterCall variable %}
     {% if variable.isMutable %}{% call mockVariableSetterCall variable %}{% endif %}
     var {{ variable.name }}: {{ variable.typeName }} {
-        get { return stubCall({{ variable.name }}GetCall) }
+        get { return stubCall({{ variable.name }}GetCall, argument: ()) }
         {% if variable.isMutable %}set { stubCall({{ variable.name }}SetCall, argument: newValue) }{% endif %}
     }
 {% endmacro %}
-    
+
+{% macro property variable %}
+    {% if variable.isMutable %}var{% else %}let{% endif %} {{ variable.name }}: {{ variable.typeName }}
+{% endmacro %}
+
 {% for type in types.protocols where type|annotated:"Mock" %}
 class Fake{{ type.name }}: {{ type.name }} {
     {% for variable in type.allVariables|!definedInExtension %}
-        {% call mockVariable variable %}
+        {% if variable|!annotated:"skipMock" %}{% call mockVariable variable %}{% else %}{% call property variable %}{% endif %}
         {% if not forloop.last %}
 
         {% endif %}
     {% endfor %}
 
-    {% for method in type.allMethods|!definedInExtension %}
-    let {{ method.shortName }}Call = {% call functionCallType method %}<{% if method.parameters.count > 0 %}{% call functionCallArgumentsType method %}, {% endif %}{% call functionCallReturnType method %}>()
+    {% if type.allVariables|!definedInExtension|annotated:"skipMock" %}
+    init({% for variable in type.allVariables|!definedInExtension|annotated:"skipMock" %}{{ variable.name }}: {{ variable.typeName }}{% if not forloop.last %}, {% endif %}{% endfor %}) {
+        {% for variable in type.allVariables|!definedInExtension|annotated:"skipMock" %}
+        self.{{ variable.name }} = {{ variable.name }}
+        {% endfor %}
+    }
+    {% endif %}
+
+    {% for method in type.allMethods|!definedInExtension where method|!annotated:"skipMock" %}
+    let {{ method.shortName }}Call = {% call functionCall method %}()
     func {{ method.name }}{% if method.throws %} throws{% endif %}{% if not method.returnTypeName.isVoid %} -> {{ method.returnTypeName }}{% endif %} {
-        return stubCall({{ method.shortName }}Call{% call stubCallArguments method %}{% if method.returnTypeName.isVoid %}, defaultValue: ()){% else %}){% endif %}
+        return stubCall({{ method.shortName }}Call{% call stubCallArguments method %}{% if method.returnTypeName.isVoid %}, defaultValue: (){% endif %})
     }
     {% if not forloop.last %}
 
