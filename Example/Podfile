@@ -2,20 +2,9 @@ platform :ios, '9.3'
 use_frameworks!
 #inhibit_all_warnings!
 
-def reusePods
-  pod 'SwiftyMock/ReactiveCocoa', :path => '../'
-end
-
 def reuseTestPods
-  reusePods
-  pod 'Quick', '~> 1.2'
-  # using 7.x-branch for now because of this issue fix https://github.com/Quick/Nimble/issues/478
-  # switch to corresponding version once it's released
-  pod 'Nimble', :git => 'https://github.com/Quick/Nimble', :branch => '7.x-branch'
-end
-
-target 'SwiftyMock_Example' do
-  reusePods
+  pod 'Quick', '~> 2.2'
+  pod 'Nimble', '~> 8.1'
 end
 
 target 'SwiftyMock_Tests' do

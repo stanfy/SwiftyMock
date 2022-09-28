@@ -1,48 +1,20 @@
 PODS:
-  - Nimble (7.1.2)
-  - Quick (1.3.0)
-  - ReactiveCocoa (7.1.0):
-    - ReactiveSwift (~> 3.1)
-  - ReactiveSwift (3.1.0):
-    - Result (~> 3.2)
-  - Result (3.2.4)
-  - SwiftyMock/Core (0.2.3)
-  - SwiftyMock/ReactiveCocoa (0.2.3):
-    - ReactiveCocoa (~> 7.1)
-    - SwiftyMock/Core
+  - Nimble (8.1.2)
+  - Quick (2.2.1)
 
 DEPENDENCIES:
-  - Nimble (from `https://github.com/Quick/Nimble`, branch `7.x-branch`)
-  - Quick (~> 1.2)
-  - SwiftyMock/ReactiveCocoa (from `../`)
+  - Nimble (~> 8.1)
+  - Quick (~> 2.2)
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  trunk:
+    - Nimble
     - Quick
-    - ReactiveCocoa
-    - ReactiveSwift
-    - Result
-
-EXTERNAL SOURCES:
-  Nimble:
-    :branch: 7.x-branch
-    :git: https://github.com/Quick/Nimble
-  SwiftyMock:
-    :path: "../"
-
-CHECKOUT OPTIONS:
-  Nimble:
-    :commit: 773bc7b5b8f3be2ba7ba9d52c6e38936dd393f69
-    :git: https://github.com/Quick/Nimble
 
 SPEC CHECKSUMS:
-  Nimble: c0980a3cf3e9d3b8774ef08167a47bede81cf84f
-  Quick: 03278013f71aa05fe9ecabc94fbcc6835f1ee76f
-  ReactiveCocoa: 105ad96f6b8711f1ee7d165fc96587479298053b
-  ReactiveSwift: 5b26d2e988fe0eed2daf48c4054d1de74db50184
-  Result: d2d07204ce72856f1fd9130bbe42c35a7b0fea10
-  SwiftyMock: 7ee122cdeb33302fff589ad3400085f464ccd292
+  Nimble: 3864815b4703c7ebffba875973c70e854489fbae
+  Quick: f5754d69b7013f5864c29aab9ae6f0c79c5bc200
 
-PODFILE CHECKSUM: 96e31c8bbe54905dd223cce795d28a49935d24a1
+PODFILE CHECKSUM: 6f1593f5faacfe1a870d6ba60dd5006bb3b88b54
 
-COCOAPODS: 1.5.3
+COCOAPODS: 1.11.3
