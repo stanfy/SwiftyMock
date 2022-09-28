@@ -12,7 +12,7 @@ Pod::Spec.new do |s|
   s.author           = { 'Stanfy' => 'hello@stanfy.com'  }
   s.source           = { :git => 'https://github.com/Stanfy/SwiftyMock.git', :tag => s.version.to_s }
 
-  s.ios.deployment_target = '8.0'
+  s.ios.deployment_target = '11.0'
 
   s.default_subspec = 'Core'
 
@@ -22,7 +22,7 @@ Pod::Spec.new do |s|
 
   s.subspec 'ReactiveCocoa' do |rs|
     rs.dependency 'SwiftyMock/Core'
-    rs.dependency 'ReactiveCocoa', '~> 7.1'
+    rs.dependency 'ReactiveCocoa'#, '~> 7.1'
     rs.source_files = 'SwiftyMock/Classes/ReactiveCocoa/**/*'
   end
 

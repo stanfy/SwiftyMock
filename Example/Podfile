@@ -1,4 +1,4 @@
-platform :ios, '9.3'
+platform :ios, '11.0'
 use_frameworks!
 #inhibit_all_warnings!
 
@@ -8,10 +8,10 @@ end
 
 def reuseTestPods
   reusePods
-  pod 'Quick', '~> 1.2'
+  pod 'Quick', '~> 5.0'
   # using 7.x-branch for now because of this issue fix https://github.com/Quick/Nimble/issues/478
   # switch to corresponding version once it's released
-  pod 'Nimble', :git => 'https://github.com/Quick/Nimble', :branch => '7.x-branch'
+  pod 'Nimble', '~> 10.0'# :git => 'https://github.com/Quick/Nimble', :branch => '7.x-branch'
 end
 
 target 'SwiftyMock_Example' do
