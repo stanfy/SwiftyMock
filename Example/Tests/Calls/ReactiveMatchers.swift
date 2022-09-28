@@ -9,7 +9,6 @@
 import Foundation
 import Quick
 import Nimble
-import Result
 import ReactiveSwift
 
 // MARK: - Send Value
@@ -47,7 +46,7 @@ func sendValue<T: SignalProducerConvertible, V>(where predicate: @escaping (V) -
     return sendValue(where: predicate, expectation: { (actualEvent, actualValue) in
         .expectedCustomValueTo(
             "send value to satisfy predicate",
-            message(forEvent: actualEvent, value: actualValue)
+            actual: message(forEvent: actualEvent, value: actualValue)
         )
     })
 }
@@ -56,7 +55,7 @@ func sendValue<T: SignalProducerConvertible, V: Equatable>(_ expectedValue: V) -
     return sendValue(where: { $0 == expectedValue }, expectation: { (actualEvent, actualValue) in
         .expectedCustomValueTo(
             "send value <\(stringify(expectedValue))>",
-            message(forEvent: actualEvent, value: actualValue)
+            actual: message(forEvent: actualEvent, value: actualValue)
         )
     })
 }
@@ -65,7 +64,7 @@ func sendEmptyValue<T: SignalProducerConvertible>() -> Predicate<T> where T.Valu
     return sendValue(where: { true }, expectation: { (actualEvent, actualValue) in
         .expectedCustomValueTo(
             "send value <Void>",
-            message(forEvent: actualEvent, value: actualValue)
+            actual: message(forEvent: actualEvent, value: actualValue)
         )
     })
 }
@@ -111,7 +110,7 @@ func sendValueAndComplete<T: SignalProducerConvertible, V>(where predicate: @esc
     return sendValueAndComplete(where: predicate, expectation: { (actualEvent, actualValue) in
         .expectedCustomValueTo(
             "send value to satisfy predicate and complete",
-            message(forEvent: actualEvent, value: actualValue)
+            actual: message(forEvent: actualEvent, value: actualValue)
         )
     })
 }
@@ -120,7 +119,7 @@ func sendValueAndComplete<T: SignalProducerConvertible, V: Equatable>(_ expected
     return sendValue(where: { $0 == expectedValue }, expectation: { (actualEvent, actualValue) in
         .expectedCustomValueTo(
             "send value <\(stringify(expectedValue))> and complete",
-            message(forEvent: actualEvent, value: actualValue)
+            actual: message(forEvent: actualEvent, value: actualValue)
         )
     })
 }
@@ -129,7 +128,7 @@ func sendEmptyValueAndComplete<T: SignalProducerConvertible>() -> Predicate<T> w
     return sendValue(where: { true }, expectation: { (actualEvent, actualValue) in
         .expectedCustomValueTo(
             "send value <Void> and complete",
-            message(forEvent: actualEvent, value: actualValue)
+            actual: message(forEvent: actualEvent, value: actualValue)
         )
     })
 }
@@ -149,7 +148,7 @@ func complete<T: SignalProducerConvertible, V, E>() -> Predicate<T> where T.Valu
         }
         return PredicateResult(
             bool: completed,
-            message: .expectedCustomValueTo("complete", message(forEvent: actualEvent))
+            message: .expectedCustomValueTo("complete", actual: message(forEvent: actualEvent))
         )
     }
 }
@@ -189,7 +188,7 @@ func fail<T: SignalProducerConvertible, E>(where predicate: @escaping (E) -> Boo
     return fail(where: predicate, expectation: { (actualEvent, actualError) in
         .expectedCustomValueTo(
             "send error to satisfy predicate",
-            message(forEvent: actualEvent, error: actualError)
+            actual: message(forEvent: actualEvent, error: actualError)
         )
     })
 }
@@ -198,25 +197,25 @@ func fail<T: SignalProducerConvertible, E>(with expectedError: E) -> Predicate<T
     return fail(where: { errorMatchesExpectedError($0, expectedError: expectedError) }, expectation: { (actualEvent, actualError) in
         .expectedCustomValueTo(
             "send error <\(stringify(expectedError))>",
-            message(forEvent: actualEvent, error: actualError)
+            actual: message(forEvent: actualEvent, error: actualError)
         )
     })
 }
 
 func fail<T: SignalProducerConvertible, E: Equatable>(with expectedError: E) -> Predicate<T> where T.Error == E {
     return fail(where: { $0 == expectedError }, expectation: { (actualEvent, actualError) in
-        .expectedCustomValueTo(
-            "send error <\(stringify(expectedError))>",
-            message(forEvent: actualEvent, error: actualError)
-        )
+            .expectedCustomValueTo(
+                "send error <\(stringify(expectedError))>",
+                actual: message(forEvent: actualEvent, error: actualError)
+            )
     })
 }
 
-func failWithNoError<T: SignalProducerConvertible>() -> Predicate<T> where T.Error == NoError {
+func failWithNoError<T: SignalProducerConvertible>() -> Predicate<T> where T.Error == Never {
     return fail(where: { _ in true }, expectation: { (actualEvent, actualError) in
         .expectedCustomValueTo(
             "send error <NoError>",
-            message(forEvent: actualEvent, error: actualError)
+            actual: message(forEvent: actualEvent, error: actualError)
         )
     })
 }
@@ -236,7 +235,7 @@ func interrupt<T: SignalProducerConvertible, V, E>() -> Predicate<T> where T.Val
         }
         return PredicateResult(
             bool: interrupted,
-            message: .expectedCustomValueTo("interrupt", message(forEvent: actualEvent))
+            message: .expectedCustomValueTo("interrupt", actual: message(forEvent: actualEvent))
         )
     }
 }
